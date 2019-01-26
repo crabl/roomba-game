@@ -30,3 +30,11 @@ export class Obstacle {
   dimensions: Dimensions;
 }
 
+export enum GameStatus {
+  Lost = 0,
+  Won = 1,
+  Normal = 2,
+  Low = 3,
+  Critical = 4,
+  Charging = 5
+}

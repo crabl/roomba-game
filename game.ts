@@ -1,9 +1,7 @@
 import { 
   Obstacle, 
   DirectionKey,
-  ObstacleType,
-  Position,
-  Dimensions
+  GameStatus
 } from './common';
 import { isCollidingWith, adjustPlayer } from './collision-detection';
 import { Wall, Dirt } from './obstacles';
@@ -17,6 +15,7 @@ const canvas_width = body.clientWidth;
 const NumDirt = 1000;
 
 interface GameState {
+  status: GameStatus;
   keys: {
     [key: string]: boolean
   };
@@ -26,6 +25,7 @@ interface GameState {
 }
 
 let state: GameState = {
+  status: GameStatus.Normal,
   keys: {},
   clock: new Date(),
   player: new Player({
@@ -33,30 +33,21 @@ let state: GameState = {
     y: Math.floor(canvas_height / 2)
   }),
   obstacles: [
-    new Dirt({ x: 300, y: 200 }),
+    new Dirt({ x: 300, y: 200 }, 1),
     new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
     new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
   ]
 };
 
-function GenerateDirt(){
+function generateDirt() {
   const randomX: number = Math.random() * canvas_width;
   const randomY: number = Math.random() * canvas_height;
-  state.obstacles.push(new Dirt({ x: randomX, y: randomY}));
+  state.obstacles.push(new Dirt({ x: randomX, y: randomY }, 1));
 }
 
 var i: number;
 for (i = 0; i < NumDirt; i++){
-  GenerateDirt();
-}
-
-enum GameStatus {
-  Lost = 0,
-  Won = 1,
-  Normal = 2,
-  Low = 3,
-  Critical = 4,
-  Charging = 5
+  generateDirt();
 }
 
 function getGameStatus(): GameStatus {
@@ -65,13 +56,11 @@ function getGameStatus(): GameStatus {
   }
 
   if (state.player.battery === 0) {
-    // if (state.player.dirt_count > 1000) {
-    //   return GameStatus.Won;
-    // } else {
-    //   return GameStatus.Lost;
-    // }
-    
-    return GameStatus.Lost;
+    if (state.player.dirt_collected > 1000) {
+      return GameStatus.Won;
+    } else {
+      return GameStatus.Lost;
+    }
   }
 
   if (state.player.battery > 25 && state.player.battery <= 50) {
@@ -83,6 +72,13 @@ function getGameStatus(): GameStatus {
   }
 
   return GameStatus.Normal;
+}
+
+function transition(current: GameStatus, next: GameStatus) {
+  if (current === GameStatus.Normal && next === GameStatus.Low) {
+    
+  } 
+  // perform state transitions
 }
 
 // Initialize the canvas, make it retina-friendly by looking at device pixel ratio
@@ -110,7 +106,7 @@ function updatePlayer() {
 
   const all_keys = Object.keys(state.keys);
 
-  all_keys.forEach((key: DirectionKey) => {
+  all_keys.forEach((key: string) => {
     // have to check whether we are actually pressing the keys
     if (state.keys[key]) {
       switch (key) {
@@ -126,6 +122,8 @@ function updatePlayer() {
         case 'ArrowRight':
           state.player.rotateRight();
           break;
+        case 'R':
+          window.location.reload();
       }
     }
   });
@@ -147,12 +145,14 @@ function detectCollisions() {
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
       if (o instanceof Dirt) {
+        // remove the dirt
         state.obstacles = obstacles.filter(x => o !== x);
+        state.player.dirt_collected += o.value;
       } else {
         adjustPlayer(player, o)
       }
     }
-  })
+  });
 }
 
 
@@ -182,6 +182,14 @@ function drawObstacles() {
   state.player.draw(context);
   updateBattery(); // eventually going to go in detectCollisions
   detectCollisions();
+
+  const current_status = state.status;
+  const next_status = getGameStatus();
+
+  if (current_status !== next_status) {
+    transition(current_status, next_status);
+    state.status = next_status;
+  }
 
   requestAnimationFrame(draw);
 })();
