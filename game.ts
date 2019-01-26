@@ -50,15 +50,6 @@ for (i = 0; i < NumDirt; i++){
   generateDirt();
 }
 
-enum GameStatus {
-  Lost = 0,
-  Won = 1,
-  Normal = 2,
-  Low = 3,
-  Critical = 4,
-  Charging = 5
-}
-
 function getGameStatus(): GameStatus {
   if (state.player.is_docked) {
     return GameStatus.Charging;
