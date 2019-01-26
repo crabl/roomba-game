@@ -13,26 +13,23 @@ canvas.style.height = canvas_height + 'px'; // css, need the px
 type DirectionKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
 interface GameState {
-  keypress: DirectionKey;
+  keys: {
+    [key: string]: boolean
+  };
   x: number;
   y: number;
 }
 
 let state: GameState = {
-  keypress: null,
+  keys: {},
   x: Math.floor(canvas_width / 2),
   y: Math.floor(canvas_height / 2)
 };
 
-document.addEventListener('keydown', (event) => {
-  event.preventDefault();
-  state.keypress = event.key as DirectionKey;
-});
-
-document.addEventListener('keyup', () => {
-  event.preventDefault();
-  state.keypress = null;
-});
+onkeydown = onkeyup = function (e: KeyboardEvent) {
+  e.preventDefault();
+  state.keys[e.key] = e.type === 'keydown';
+};
 
 const context = canvas.getContext('2d');
 context.scale(device_pixel_ratio, device_pixel_ratio);
@@ -45,20 +42,26 @@ function draw() {
   context.fill();
 
   // bound to canvas width/height
-  switch (state.keypress) {
-    case 'ArrowUp':
-      state.y = Math.max(state.y - 1, 0);
-      break;
-    case 'ArrowDown':
-      state.y = Math.min(state.y + 1, canvas_height);
-      break;
-    case 'ArrowLeft':
-      state.x = Math.max(state.x - 1, 0);
-      break;
-    case 'ArrowRight':
-      state.x = Math.min(state.x + 1, canvas_width);
-      break;
-  }
+  Object.keys(state.keys).forEach((key: DirectionKey) => {
+    // have to check whether we are actually pressing the keys
+    if (state.keys[key]) {
+      switch (key) {
+        case 'ArrowUp':
+          state.y = Math.max(state.y - 1, 0);
+          break;
+        case 'ArrowDown':
+          state.y = Math.min(state.y + 1, canvas_height);
+          break;
+        case 'ArrowLeft':
+          state.x = Math.max(state.x - 1, 0);
+          break;
+        case 'ArrowRight':
+          state.x = Math.min(state.x + 1, canvas_width);
+          break;
+      }
+    }
+  });
+  
 
   
   requestAnimationFrame(draw);
