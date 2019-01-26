@@ -75,6 +75,9 @@ function getGameStatus(): GameStatus {
 }
 
 function transition(current: GameStatus, next: GameStatus) {
+  if (current === GameStatus.Normal && next === GameStatus.Low) {
+    
+  } 
   // perform state transitions
 }
 
@@ -103,7 +106,7 @@ function updatePlayer() {
 
   const all_keys = Object.keys(state.keys);
 
-  all_keys.forEach((key: DirectionKey) => {
+  all_keys.forEach((key: string) => {
     // have to check whether we are actually pressing the keys
     if (state.keys[key]) {
       switch (key) {
@@ -119,6 +122,8 @@ function updatePlayer() {
         case 'ArrowRight':
           state.player.rotateRight();
           break;
+        case 'R':
+          window.location.reload();
       }
     }
   });
