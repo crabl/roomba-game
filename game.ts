@@ -6,6 +6,7 @@ import {
 import { isCollidingWith, adjustPlayer } from './collision-detection';
 import { Wall, Dirt } from './obstacles';
 import { Player } from './player';
+import { ChargingStation } from './charging_station';
 
 const canvas = document.querySelector('canvas');
 const body = document.querySelector('body');
@@ -35,7 +36,9 @@ let state: GameState = {
   obstacles: [
     new Dirt({ x: 300, y: 200 }, 1),
     new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
-    new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
+    new Wall({ x: 700, y: 200 }, { height: 100, width: 100 }),
+    new ChargingStation({x:700,y:600},{width:10,height:20})
+
   ]
 };
 
@@ -167,10 +170,14 @@ function updateBattery() {
 
 function drawObstacles() {
   state.obstacles.forEach((o: Obstacle) => {
+    if(o instanceof ChargingStation){
+      o.draw(context);
+    }else{
     context.beginPath();
     context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
     context.fillStyle = '#333';
     context.fill();
+    }
   });
 }
 
