@@ -6,6 +6,8 @@ import {
   Dimensions, 
   Player
 } from './common';
+import { isCollidingWith } from './collision-detection';
+import { Wall } from './obstacles';
 
 const canvas = document.querySelector('canvas');
 const body = document.querySelector('body');
@@ -34,7 +36,9 @@ let state: GameState = {
       y: Math.floor(canvas_height / 2)
     }
   },
-  obstacles: []
+  obstacles: [
+    new Wall({ x: 500, y: 500 }, { height: 100, width: 100 })
+  ]
 };
 
 function getPlayerPosition() {
@@ -87,7 +91,12 @@ function updatePlayer() {
 
 
 function detectCollisions() {
-
+  const { player, obstacles } = state;
+  obstacles.forEach((o: Obstacle) => {
+    if (isCollidingWith(player, o)) {
+      console.log(player.position, o.position)
+    }
+  })
 }
 
 
@@ -96,8 +105,17 @@ function updateBattery() {
   if (current_time - state.clock > 1000) {
     state.clock = current_time;
     state.player.battery = Math.max(0, state.player.battery - 1);
-    console.log(state.player.battery);
+    //console.log(state.player.battery);
   }
+}
+
+function drawObstacles() {
+  state.obstacles.forEach((o: Obstacle) => {
+    context.beginPath();
+    context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
+    context.fillStyle = '#333';
+    context.fill();
+  });
 }
 
 (function draw() {
@@ -107,9 +125,12 @@ function updateBattery() {
   context.fillStyle = 'rgba(250,0,0,1)';
   context.fill();
 
+  drawObstacles();
   updatePlayer();
   updateBattery(); // eventually going to go in detectCollisions
   detectCollisions();
 
   requestAnimationFrame(draw);
 })();
+
+
