@@ -6,7 +6,7 @@ import {
   Dimensions, 
   Player
 } from './common';
-import { isCollidingWith } from './collision-detection';
+import { isCollidingWith, adjustPlayer } from './collision-detection';
 import { Wall } from './obstacles';
 
 const canvas = document.querySelector('canvas');
@@ -14,6 +14,8 @@ const body = document.querySelector('body');
 const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = body.clientHeight;
 const canvas_width = body.clientWidth;
+
+var iscolliding: Boolean;
 
 interface GameState {
   keys: {
@@ -94,7 +96,9 @@ function detectCollisions() {
   const { player, obstacles } = state;
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
-      console.log(player.position, o.position)
+      // console.log(player.position, o.position),
+      adjustPlayer(player, o)
+
     }
   })
 }
