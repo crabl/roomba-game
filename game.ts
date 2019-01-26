@@ -39,7 +39,8 @@ let state: GameState = {
     }
   },
   obstacles: [
-    new Wall({ x: 500, y: 500 }, { height: 100, width: 100 })
+    new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
+    new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
   ]
 };
 
@@ -124,12 +125,14 @@ function drawObstacles() {
 
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
+
+  drawObstacles();
+
   context.beginPath();
   context.arc(state.player.position.x, state.player.position.y, state.player.radius, 0, 2 * Math.PI);
   context.fillStyle = 'rgba(250,0,0,1)';
   context.fill();
 
-  drawObstacles();
   updatePlayer();
   updateBattery(); // eventually going to go in detectCollisions
   detectCollisions();
