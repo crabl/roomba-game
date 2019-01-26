@@ -154,6 +154,14 @@ function detectCollisions() {
       } else {
         adjustPlayer(player, o)
       }
+
+      if (o instanceof ChargingStation) {
+        if(player.battery <= 100){
+          player.is_docked = true;
+        }
+      }else{
+        player.is_docked= false;
+      }
     }
   })
 }
@@ -164,7 +172,13 @@ function updateBattery() {
   if (current_time - state.clock > 1000) {
     state.clock = current_time;
     state.player.battery = Math.max(0, state.player.battery - 1);
-    //console.log(state.player.battery);
+    console.log(state.player.battery);
+  
+    if(state.player.is_docked){
+      if(state.player.battery < 100){
+        state.player.battery += 4;
+      }
+    }
   }
 }
 
@@ -191,6 +205,9 @@ function drawObstacles() {
   detectCollisions();
 
   requestAnimationFrame(draw);
+
+  console.log(state.player.is_docked);
+
 })();
 
 
