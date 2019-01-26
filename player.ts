@@ -7,7 +7,7 @@ const PI = 3.14;
 export class Player {
   dirt_collected: number = 0;
   is_docked: boolean = false;
-  battery: number = 52;
+  battery: number = 100;
   radius: number = 20;
   position: Position = {
     x: 0,
