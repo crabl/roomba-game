@@ -63,6 +63,21 @@ export class Player {
     context.translate(this.position.x, this.position.y);
     context.rotate(this.theta);
 
+    // background of battery indicator
+    context.beginPath();
+    context.lineWidth = 6;
+    if (this.battery <= 25) {
+      context.strokeStyle = 'darkred';
+    } else if (this.battery > 25 && this.battery <= 50) {
+      context.strokeStyle = 'gold';
+    } else {
+      context.strokeStyle = 'darkgreen';
+    }
+    context.arc(0, 0, this.radius, 0, 2 * Math.PI);
+    context.stroke();
+    context.closePath();
+
+    // interior battery ring
     context.beginPath();
     context.lineWidth = 6;
 
@@ -71,12 +86,13 @@ export class Player {
     } else if (this.battery > 25 && this.battery <= 50) {
       context.strokeStyle = 'yellow';
     } else {
-      context.strokeStyle = 'green';
+      context.strokeStyle = 'chartreuse';
     }
 
     context.arc(0, 0, this.radius, 0, (this.battery / 100) * -2 * Math.PI, true);
     context.stroke();
 
+    // draw roomba
     context.drawImage(this.image, -20, -20, 40, 40);
 
     context.restore();
