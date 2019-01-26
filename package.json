@@ -3,6 +3,7 @@
     "typescript": "^3.2.4"
   },
   "dependencies": {
+    "@types/node": "^10.12.18",
     "moment": "^2.24.0"
   }
 }

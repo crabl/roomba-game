@@ -1,5 +1,7 @@
 import { Position } from './common';
 
+const roombaImage = require('./sprites/demon_roomba.png');
+
 const PI = 3.14;
 
 export class Player {
@@ -12,9 +14,11 @@ export class Player {
   };
   theta: number = 0; // [0, 2 * Math.PI]
   velocity: number = 0;
+  image = new Image();
 
   constructor(initial_position: Position) {
     this.position = initial_position;
+    this.image.src = roombaImage;
   }
 
   rotateLeft() {
@@ -49,6 +53,10 @@ export class Player {
     }
   }
 
+  setImage(){
+    this.image.src = roombaImage;
+  }
+
   draw(context: CanvasRenderingContext2D) {
     context.save();
     context.translate(this.position.x, this.position.y);
@@ -58,10 +66,16 @@ export class Player {
     // context.arc(0, 0, this.radius, 0, 2 * Math.PI);
     // context.stroke();
 
-    context.fillStyle = 'red';
-    context.fillRect(-10, -5, 20, 10);
-    
-    
+    // context.fillStyle = 'red';
+    // context.fillRect(-10, -5, 20, 10);
+
+    // this.image.onload = () => {
+      context.drawImage(this.image, -20, -20, 40, 40);
+    // }
+    // this.image.src = roombaImage;
+    // console.log(this.image.src);
+    // context.drawImage(this.image, this.position.x, this.position.y);
+
     context.restore();
   }
 }
