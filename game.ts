@@ -12,6 +12,7 @@ import { Rug } from './decor';
 
 const floor = new Image();
 floor.src = require('./sprites/hardwood_sprite.png')
+import { Sounds } from './sounds';
 
 const canvas = document.querySelector('canvas');
 const device_pixel_ratio = window.devicePixelRatio;
@@ -19,6 +20,8 @@ const canvas_height = 768;
 const canvas_width = 1024;
 
 const DIRT_REQUIRED = 100;
+const sounds = new Sounds();
+sounds.play();
 
 interface GameState {
   status: GameStatus;
