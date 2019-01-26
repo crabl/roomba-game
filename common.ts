@@ -3,7 +3,8 @@ export type DirectionKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 export enum ObstacleType {
   Fixed = 0,
   Raised = 1,
-  Doorway = 2
+  Doorway = 2,
+  Dirt = 3
 }
 
 export interface Position {

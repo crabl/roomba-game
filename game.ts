@@ -6,7 +6,7 @@ import {
   Dimensions
 } from './common';
 import { isCollidingWith, adjustPlayer } from './collision-detection';
-import { Wall } from './obstacles';
+import { Wall, Dirt } from './obstacles';
 import { Player } from './player';
 
 const canvas = document.querySelector('canvas');
@@ -34,6 +34,7 @@ let state: GameState = {
     y: Math.floor(canvas_height / 2)
   }),
   obstacles: [
+    new Dirt({ x: 300, y: 200 }),
     new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
     new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
   ]
@@ -100,9 +101,11 @@ function detectCollisions() {
   const { player, obstacles } = state;
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
-      // console.log(player.position, o.position),
-      adjustPlayer(player, o)
-
+      if (o instanceof Dirt) {
+        state.obstacles = obstacles.filter(x => o !== x);
+      } else {
+        adjustPlayer(player, o)
+      }
     }
   })
 }
@@ -128,17 +131,8 @@ function drawObstacles() {
 
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
-<<<<<<< HEAD
 
   drawObstacles();
-
-  context.beginPath();
-  context.arc(state.player.position.x, state.player.position.y, state.player.radius, 0, 2 * Math.PI);
-  context.fillStyle = 'rgba(250,0,0,1)';
-  context.fill();
-=======
->>>>>>> add player class with ability to draw
-
   updatePlayer();
   state.player.draw(context);
   updateBattery(); // eventually going to go in detectCollisions
