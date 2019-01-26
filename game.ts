@@ -1,6 +1,5 @@
 import { 
   Obstacle, 
-  DirectionKey,
   GameStatus
 } from './common';
 import { isCollidingWith, adjustPlayer } from './collision-detection';
@@ -37,7 +36,7 @@ let state: GameState = {
     new Dirt({ x: 300, y: 200 }, 1),
     new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
     new Wall({ x: 700, y: 200 }, { height: 100, width: 100 }),
-    new ChargingStation({x:700,y:600},{width:10,height:20})
+    new ChargingStation({ x: 700, y: 600 }, { width: 10, height: 20 })
 
   ]
 };
@@ -139,12 +138,14 @@ function updatePlayer() {
   state.player.position = {
     x: Math.min(Math.max(0, state.player.position.x + vx), canvas_width),
     y: Math.min(Math.max(0, state.player.position.y + vy), canvas_height)
-  }
+  };
 }
 
 
 function detectCollisions() {
   const { player, obstacles } = state;
+  player.is_docked = false;
+
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
       if (o instanceof Dirt) {
@@ -156,28 +157,21 @@ function detectCollisions() {
       }
 
       if (o instanceof ChargingStation) {
-        if(player.battery <= 100){
-          player.is_docked = true;
-        }
-      }else{
-        player.is_docked= false;
+        player.is_docked = player.battery <= 100;
       }
     }
   });
 }
 
-
 function updateBattery() {
   const current_time: any = new Date();
   if (current_time - state.clock > 1000) {
     state.clock = current_time;
-    state.player.battery = Math.max(0, state.player.battery - 1);
-    console.log(state.player.battery);
   
-    if(state.player.is_docked){
-      if(state.player.battery < 100){
-        state.player.battery += 4;
-      }
+    if (state.player.is_docked) {
+      state.player.battery = Math.min(100, state.player.battery + 2);
+    } else {
+      state.player.battery = Math.max(0, state.player.battery - 1)
     }
   }
 }
