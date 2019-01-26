@@ -1,6 +1,6 @@
 import { Position } from './common';
 
-const roombaImage = require('./sprites/demon_roomba.png');
+const roombaImage = require('./sprites/demon_roomba_right.png');
 
 const PI = 3.14;
 
