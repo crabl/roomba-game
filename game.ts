@@ -3,8 +3,11 @@ import {
   DirectionKey,
   ObstacleType,
   Position,
-  Dimensions 
+  Dimensions, 
+  Player
 } from './common';
+import { isCollidingWith, adjustPlayer } from './collision-detection';
+import { Wall } from './obstacles';
 
 const canvas = document.querySelector('canvas');
 const body = document.querySelector('body');
@@ -12,17 +15,14 @@ const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = body.clientHeight;
 const canvas_width = body.clientWidth;
 
+var iscolliding: Boolean;
+
 interface GameState {
   keys: {
     [key: string]: boolean
   };
   clock: any;
-  player: {
-    is_docked: boolean;
-    battery: number;
-    position: Position;
-    radius: number;
-  };
+  player: Player;
   obstacles: Obstacle[]
 }
 
@@ -38,7 +38,10 @@ let state: GameState = {
       y: Math.floor(canvas_height / 2)
     }
   },
-  obstacles: []
+  obstacles: [
+    new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
+    new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
+  ]
 };
 
 function getPlayerPosition() {
@@ -91,7 +94,14 @@ function updatePlayer() {
 
 
 function detectCollisions() {
+  const { player, obstacles } = state;
+  obstacles.forEach((o: Obstacle) => {
+    if (isCollidingWith(player, o)) {
+      // console.log(player.position, o.position),
+      adjustPlayer(player, o)
 
+    }
+  })
 }
 
 
@@ -100,12 +110,24 @@ function updateBattery() {
   if (current_time - state.clock > 1000) {
     state.clock = current_time;
     state.player.battery = Math.max(0, state.player.battery - 1);
-    console.log(state.player.battery);
+    //console.log(state.player.battery);
   }
+}
+
+function drawObstacles() {
+  state.obstacles.forEach((o: Obstacle) => {
+    context.beginPath();
+    context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
+    context.fillStyle = '#333';
+    context.fill();
+  });
 }
 
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
+
+  drawObstacles();
+
   context.beginPath();
   context.arc(state.player.position.x, state.player.position.y, state.player.radius, 0, 2 * Math.PI);
   context.fillStyle = 'rgba(250,0,0,1)';
@@ -117,3 +139,5 @@ function updateBattery() {
 
   requestAnimationFrame(draw);
 })();
+
+
