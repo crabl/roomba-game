@@ -3,11 +3,11 @@ import {
   DirectionKey,
   ObstacleType,
   Position,
-  Dimensions, 
-  Player
+  Dimensions
 } from './common';
 import { isCollidingWith, adjustPlayer } from './collision-detection';
 import { Wall } from './obstacles';
+import { Player } from './player';
 
 const canvas = document.querySelector('canvas');
 const body = document.querySelector('body');
@@ -29,24 +29,15 @@ interface GameState {
 let state: GameState = {
   keys: {},
   clock: new Date(),
-  player: {
-    is_docked: false,
-    battery: 100,
-    radius: 20,
-    position: {
-      x: Math.floor(canvas_width / 2),
-      y: Math.floor(canvas_height / 2)
-    }
-  },
+  player: new Player({
+    x: Math.floor(canvas_width / 2),
+    y: Math.floor(canvas_height / 2)
+  }),
   obstacles: [
     new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
     new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
   ]
 };
-
-function getPlayerPosition() {
-  return state.player.position;
-}
 
 // Initialize the canvas, make it retina-friendly by looking at device pixel ratio
 canvas.width = canvas_width * device_pixel_ratio;
@@ -67,29 +58,41 @@ const context = canvas.getContext('2d');
 context.scale(device_pixel_ratio, device_pixel_ratio);
 
 function updatePlayer() {
-  const increment = 1;
-  const position = getPlayerPosition();
-
   // bound to canvas width/height
-  Object.keys(state.keys).forEach((key: DirectionKey) => {
+  const vx = Math.cos(state.player.theta) * state.player.velocity;
+  const vy = Math.sin(state.player.theta) * state.player.velocity;
+
+  const all_keys = Object.keys(state.keys);
+
+  all_keys.forEach((key: DirectionKey) => {
     // have to check whether we are actually pressing the keys
     if (state.keys[key]) {
       switch (key) {
         case 'ArrowUp':
-          position.y = Math.max(position.y - increment, 0);
+          state.player.increaseVelocity();
           break;
         case 'ArrowDown':
-          position.y = Math.min(position.y + increment, canvas_height);
+          state.player.decreaseVelocity();
           break;
         case 'ArrowLeft':
-          position.x = Math.max(position.x - increment, 0);
+          state.player.rotateLeft();
           break;
         case 'ArrowRight':
-          position.x = Math.min(position.x + increment, canvas_width);
+          state.player.rotateRight();
           break;
       }
     }
   });
+
+  // if we're not holding the up or down arrows, we should decelerate
+  if (!all_keys['ArrowUp'] && !all_keys['ArrowDown']) {
+    state.player.decelerate();
+  }
+
+  state.player.position = {
+    x: Math.min(Math.max(0, state.player.position.x + vx), canvas_width),
+    y: Math.min(Math.max(0, state.player.position.y + vy), canvas_height)
+  }
 }
 
 
@@ -125,6 +128,7 @@ function drawObstacles() {
 
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
+<<<<<<< HEAD
 
   drawObstacles();
 
@@ -132,8 +136,11 @@ function drawObstacles() {
   context.arc(state.player.position.x, state.player.position.y, state.player.radius, 0, 2 * Math.PI);
   context.fillStyle = 'rgba(250,0,0,1)';
   context.fill();
+=======
+>>>>>>> add player class with ability to draw
 
   updatePlayer();
+  state.player.draw(context);
   updateBattery(); // eventually going to go in detectCollisions
   detectCollisions();
 
