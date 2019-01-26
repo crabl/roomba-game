@@ -62,20 +62,22 @@ export class Player {
     context.save();
     context.translate(this.position.x, this.position.y);
     context.rotate(this.theta);
-    
-    // context.strokeStyle = 'blue';
-    // context.arc(0, 0, this.radius, 0, 2 * Math.PI);
-    // context.stroke();
 
-    // context.fillStyle = 'red';
-    // context.fillRect(-10, -5, 20, 10);
+    context.beginPath();
+    context.lineWidth = 6;
 
-    // this.image.onload = () => {
-      context.drawImage(this.image, -20, -20, 40, 40);
-    // }
-    // this.image.src = roombaImage;
-    // console.log(this.image.src);
-    // context.drawImage(this.image, this.position.x, this.position.y);
+    if (this.battery <= 25) {
+      context.strokeStyle = 'red';
+    } else if (this.battery > 25 && this.battery <= 50) {
+      context.strokeStyle = 'yellow';
+    } else {
+      context.strokeStyle = 'green';
+    }
+
+    context.arc(0, 0, this.radius, 0, (this.battery / 100) * -2 * Math.PI, true);
+    context.stroke();
+
+    context.drawImage(this.image, -20, -20, 40, 40);
 
     context.restore();
   }
