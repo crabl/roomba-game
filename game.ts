@@ -165,13 +165,13 @@ function detectCollisions() {
 
 function updateBattery() {
   const current_time: any = new Date();
-  if (current_time - state.clock > 1000) {
+  if (current_time - state.clock > 10) {
     state.clock = current_time;
   
     if (state.player.is_docked) {
-      state.player.battery = Math.min(100, state.player.battery + 2);
+      state.player.battery = Math.min(100, state.player.battery + .03);
     } else {
-      state.player.battery = Math.max(0, state.player.battery - 1)
+      state.player.battery = Math.max(0, state.player.battery - .01)
     }
   }
 }
@@ -180,11 +180,11 @@ function drawObstacles() {
   state.obstacles.forEach((o: Obstacle) => {
     if(o instanceof ChargingStation){
       o.draw(context);
-    }else{
-    context.beginPath();
-    context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
-    context.fillStyle = '#333';
-    context.fill();
+    } else {
+      context.beginPath();
+      context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
+      context.fillStyle = '#333';
+      context.fill();
     }
   });
 }

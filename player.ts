@@ -7,7 +7,7 @@ const PI = 3.14;
 export class Player {
   dirt_collected: number = 0;
   is_docked: boolean = false;
-  battery: number = 100;
+  battery: number = 52;
   radius: number = 20;
   position: Position = {
     x: 0,
@@ -63,30 +63,49 @@ export class Player {
     context.translate(this.position.x, this.position.y);
     context.rotate(this.theta);
 
+    // pulse indicator faster
+    if (this.battery <= 25) {
+      context.lineWidth = 3 + 4 * Math.abs(Math.sin(this.battery * 10));
+    } else if (this.battery > 25 && this.battery <= 50) {
+      context.lineWidth = 3 + 4 * Math.abs(Math.sin(this.battery * 5));
+    } else {
+      context.lineWidth = 3 + 4 * Math.abs(Math.sin(this.battery * 2));
+    }
+
+    if (this.is_docked) {
+      context.lineWidth = 3 + 4 * Math.abs(Math.sin(this.battery));
+    }
+
     // background of battery indicator
     context.beginPath();
-    context.lineWidth = 6;
     if (this.battery <= 25) {
-      context.strokeStyle = 'darkred';
+      context.strokeStyle = 'rgba(255,124,124,0.5)';
     } else if (this.battery > 25 && this.battery <= 50) {
-      context.strokeStyle = 'gold';
+      context.strokeStyle = 'rgba(255,189,129,0.5)';	
     } else {
-      context.strokeStyle = 'darkgreen';
+      context.strokeStyle = 'rgba(186,255,192,0.5)';
     }
+
+    if (this.is_docked) {
+      context.strokeStyle = 'rgba(155,207,255,0.5)';
+    }
+
     context.arc(0, 0, this.radius, 0, 2 * Math.PI);
     context.stroke();
     context.closePath();
 
     // interior battery ring
     context.beginPath();
-    context.lineWidth = 6;
-
     if (this.battery <= 25) {
-      context.strokeStyle = 'red';
+      context.strokeStyle = 'rgba(250,0,0,0.75)';
     } else if (this.battery > 25 && this.battery <= 50) {
-      context.strokeStyle = 'yellow';
+      context.strokeStyle = 'rgba(255,123,0,0.75)';
     } else {
-      context.strokeStyle = 'chartreuse';
+      context.strokeStyle = 'rgba(0,206,18,0.75)';
+    }
+
+    if (this.is_docked) {
+      context.strokeStyle = 'rgba(2,155,255,0.75)';
     }
 
     context.arc(0, 0, this.radius, 0, (this.battery / 100) * -2 * Math.PI, true);
