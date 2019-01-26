@@ -14,6 +14,7 @@ const body = document.querySelector('body');
 const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = body.clientHeight;
 const canvas_width = body.clientWidth;
+const NumDirt = 1000;
 
 interface GameState {
   keys: {
@@ -38,6 +39,16 @@ let state: GameState = {
   ]
 };
 
+function GenerateDirt(){
+  const randomX: number = Math.random() * canvas_width;
+  const randomY: number = Math.random() * canvas_height;
+  state.obstacles.push(new Dirt({ x: randomX, y: randomY}));
+}
+
+var i: number;
+for (i = 0; i < NumDirt; i++){
+  GenerateDirt();
+}
 
 enum GameStatus {
   Lost = 0,
