@@ -33,21 +33,21 @@ let state: GameState = {
     y: Math.floor(canvas_height / 2)
   }),
   obstacles: [
-    new Dirt({ x: 300, y: 200 }),
+    new Dirt({ x: 300, y: 200 }, 1),
     new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
     new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
   ]
 };
 
-function GenerateDirt(){
+function generateDirt() {
   const randomX: number = Math.random() * canvas_width;
   const randomY: number = Math.random() * canvas_height;
-  state.obstacles.push(new Dirt({ x: randomX, y: randomY}));
+  state.obstacles.push(new Dirt({ x: randomX, y: randomY }, 1));
 }
 
 var i: number;
 for (i = 0; i < NumDirt; i++){
-  GenerateDirt();
+  generateDirt();
 }
 
 enum GameStatus {
@@ -65,13 +65,11 @@ function getGameStatus(): GameStatus {
   }
 
   if (state.player.battery === 0) {
-    // if (state.player.dirt_count > 1000) {
-    //   return GameStatus.Won;
-    // } else {
-    //   return GameStatus.Lost;
-    // }
-    
-    return GameStatus.Lost;
+    if (state.player.dirt_collected > 1000) {
+      return GameStatus.Won;
+    } else {
+      return GameStatus.Lost;
+    }
   }
 
   if (state.player.battery > 25 && state.player.battery <= 50) {
@@ -147,12 +145,14 @@ function detectCollisions() {
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
       if (o instanceof Dirt) {
+        // remove the dirt
         state.obstacles = obstacles.filter(x => o !== x);
+        state.player.dirt_collected += o.value;
       } else {
         adjustPlayer(player, o)
       }
     }
-  })
+  });
 }
 
 

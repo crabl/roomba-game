@@ -11,7 +11,7 @@ export class Dirt implements Obstacle {
     height: 2,
     width: 2
   };
-  constructor(public position: Position) {}
+  constructor(public position: Position, public value: number) {}
 }
 
 // export class Doorway implements Obstacle {
