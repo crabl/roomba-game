@@ -21,6 +21,7 @@ interface GameState {
     is_docked: boolean;
     battery: number;
     position: Position;
+    radius: number;
   };
   obstacles: Obstacle[]
 }
@@ -31,6 +32,7 @@ let state: GameState = {
   player: {
     is_docked: false,
     battery: 100,
+    radius: 20,
     position: {
       x: Math.floor(canvas_width / 2),
       y: Math.floor(canvas_height / 2)
@@ -105,7 +107,7 @@ function updateBattery() {
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
   context.beginPath();
-  context.arc(state.player.position.x, state.player.position.y, 20, 0, 2 * Math.PI);
+  context.arc(state.player.position.x, state.player.position.y, state.player.radius, 0, 2 * Math.PI);
   context.fillStyle = 'rgba(250,0,0,1)';
   context.fill();
 
