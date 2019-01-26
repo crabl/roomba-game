@@ -1,9 +1,7 @@
 import { 
   Obstacle, 
   DirectionKey,
-  ObstacleType,
-  Position,
-  Dimensions
+  GameStatus
 } from './common';
 import { isCollidingWith, adjustPlayer } from './collision-detection';
 import { Wall, Dirt } from './obstacles';
@@ -17,6 +15,7 @@ const canvas_width = body.clientWidth;
 const NumDirt = 1000;
 
 interface GameState {
+  status: GameStatus;
   keys: {
     [key: string]: boolean
   };
@@ -26,6 +25,7 @@ interface GameState {
 }
 
 let state: GameState = {
+  status: GameStatus.Normal,
   keys: {},
   clock: new Date(),
   player: new Player({
@@ -81,6 +81,10 @@ function getGameStatus(): GameStatus {
   }
 
   return GameStatus.Normal;
+}
+
+function transition(current: GameStatus, next: GameStatus) {
+  // perform state transitions
 }
 
 // Initialize the canvas, make it retina-friendly by looking at device pixel ratio
@@ -182,6 +186,14 @@ function drawObstacles() {
   state.player.draw(context);
   updateBattery(); // eventually going to go in detectCollisions
   detectCollisions();
+
+  const current_status = state.status;
+  const next_status = getGameStatus();
+
+  if (current_status !== next_status) {
+    transition(current_status, next_status);
+    state.status = next_status;
+  }
 
   requestAnimationFrame(draw);
 })();
