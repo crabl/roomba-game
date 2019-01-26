@@ -4,42 +4,52 @@ const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = body.clientHeight;
 const canvas_width = body.clientWidth;
 
-// Initialize the canvas, make it retina-friendly by looking at device pixel ratio
-canvas.width = canvas_width * device_pixel_ratio;
-canvas.height = canvas_height * device_pixel_ratio;
-canvas.style.width = canvas_width + 'px'; // css, need the px
-canvas.style.height = canvas_height + 'px'; // css, need the px
-
 type DirectionKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
 interface GameState {
   keys: {
     [key: string]: boolean
   };
-  x: number;
-  y: number;
+  clock: any;
+  player: {
+    is_docked: boolean;
+    battery: number;
+    x: number;
+    y: number;
+  };
 }
 
 let state: GameState = {
   keys: {},
-  x: Math.floor(canvas_width / 2),
-  y: Math.floor(canvas_height / 2)
+  clock: new Date(),
+  player: {
+    is_docked: false,
+    battery: 100,
+    x: Math.floor(canvas_width / 2),
+    y: Math.floor(canvas_height / 2)
+  }
 };
+
+// Initialize the canvas, make it retina-friendly by looking at device pixel ratio
+canvas.width = canvas_width * device_pixel_ratio;
+canvas.height = canvas_height * device_pixel_ratio;
+canvas.style.width = canvas_width + 'px'; // css, need the px
+canvas.style.height = canvas_height + 'px'; // css, need the px
 
 onkeydown = onkeyup = function (e: KeyboardEvent) {
   e.preventDefault();
-  state.keys[e.key] = e.type === 'keydown';
+  if (e.type === 'keydown') {
+    state.keys[e.key] = true;
+  } else {
+    delete state.keys[e.key];
+  }
 };
 
 const context = canvas.getContext('2d');
 context.scale(device_pixel_ratio, device_pixel_ratio);
 
-function draw() {
-  context.clearRect(0, 0 , canvas_width, canvas_height);
-  context.beginPath();
-  context.arc(state.x, state.y, 20, 0, 2 * Math.PI);
-  context.fillStyle = 'rgba(250,0,0,0.9)';
-  context.fill();
+function updatePlayer() {
+  const increment = 1;
 
   // bound to canvas width/height
   Object.keys(state.keys).forEach((key: DirectionKey) => {
@@ -47,23 +57,39 @@ function draw() {
     if (state.keys[key]) {
       switch (key) {
         case 'ArrowUp':
-          state.y = Math.max(state.y - 1, 0);
+          state.player.y = Math.max(state.player.y - increment, 0);
           break;
         case 'ArrowDown':
-          state.y = Math.min(state.y + 1, canvas_height);
+          state.player.y = Math.min(state.player.y + increment, canvas_height);
           break;
         case 'ArrowLeft':
-          state.x = Math.max(state.x - 1, 0);
+          state.player.x = Math.max(state.player.x - increment, 0);
           break;
         case 'ArrowRight':
-          state.x = Math.min(state.x + 1, canvas_width);
+          state.player.x = Math.min(state.player.x + increment, canvas_width);
           break;
       }
     }
   });
-  
-
-  
-  requestAnimationFrame(draw);
 }
-draw();
+
+function updateBattery() {
+  const current_time: any = new Date();
+  if (current_time - state.clock > 1000) {
+    state.clock = current_time;
+    state.player.battery -= 1;
+  }
+}
+
+(function draw() {
+  context.clearRect(0, 0 , canvas_width, canvas_height);
+  context.beginPath();
+  context.arc(state.player.x, state.player.y, 20, 0, 2 * Math.PI);
+  context.fillStyle = 'rgba(250,0,0,1)';
+  context.fill();
+
+  updatePlayer();
+  updateBattery();
+
+  requestAnimationFrame(draw);
+})();
