@@ -15,8 +15,6 @@ const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = body.clientHeight;
 const canvas_width = body.clientWidth;
 
-var iscolliding: Boolean;
-
 interface GameState {
   keys: {
     [key: string]: boolean
@@ -39,6 +37,42 @@ let state: GameState = {
     new Wall({ x: 700, y: 200 }, { height: 100, width: 100 })
   ]
 };
+
+
+enum GameStatus {
+  Lost = 0,
+  Won = 1,
+  Normal = 2,
+  Low = 3,
+  Critical = 4,
+  Charging = 5
+}
+
+function getGameStatus(): GameStatus {
+  if (state.player.is_docked) {
+    return GameStatus.Charging;
+  }
+
+  if (state.player.battery === 0) {
+    // if (state.player.dirt_count > 1000) {
+    //   return GameStatus.Won;
+    // } else {
+    //   return GameStatus.Lost;
+    // }
+    
+    return GameStatus.Lost;
+  }
+
+  if (state.player.battery > 25 && state.player.battery <= 50) {
+    return GameStatus.Low;
+  }
+
+  if (state.player.battery > 0 && state.player.battery <= 25) {
+    return GameStatus.Critical;
+  }
+
+  return GameStatus.Normal;
+}
 
 // Initialize the canvas, make it retina-friendly by looking at device pixel ratio
 canvas.width = canvas_width * device_pixel_ratio;
