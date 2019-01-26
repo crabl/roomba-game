@@ -3,7 +3,8 @@ import {
   DirectionKey,
   ObstacleType,
   Position,
-  Dimensions 
+  Dimensions, 
+  Player
 } from './common';
 
 const canvas = document.querySelector('canvas');
@@ -17,12 +18,7 @@ interface GameState {
     [key: string]: boolean
   };
   clock: any;
-  player: {
-    is_docked: boolean;
-    battery: number;
-    position: Position;
-    radius: number;
-  };
+  player: Player;
   obstacles: Obstacle[]
 }
 

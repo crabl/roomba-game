@@ -16,6 +16,13 @@ export interface Dimensions {
   width: number;
 }
 
+export interface Player {
+  is_docked: boolean;
+  battery: number;
+  position: Position;
+  radius: number;
+}
+
 export class Obstacle {
   obstacle_type: ObstacleType;
   position: Position;

@@ -1,6 +1,6 @@
-import { Obstacle, Position } from './common';
+import { Obstacle, Position, Player } from './common';
 
-export function isCollidingWith(player: Position, obstacle: Obstacle): boolean {
+export function isCollidingWith(player: Player, obstacle: Obstacle): boolean {
     //const obstacle_top_left: Position = {
     //    x: obstacle.position.x,
     //    y: obstacle.position.y
@@ -26,10 +26,10 @@ export function isCollidingWith(player: Position, obstacle: Obstacle): boolean {
     const obstacle_bottom: Number = obstacle.position.x + obstacle.dimensions.height;
     const obstacle_left: Number = obstacle.position.y;
 
-    if (player.x >= obstacle_top ||
-        player.y <= obstacle_right || 
-        player.x <= obstacle_bottom ||
-        player.y >= obstacle_left) {
+    if (player.position.x + player.radius >= obstacle_top ||
+        player.position.y - player.radius <= obstacle_right || 
+        player.position.x - player.radius <= obstacle_bottom ||
+        player.position.y + player.radius >= obstacle_left) {
         return true;
     }
     
