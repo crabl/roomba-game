@@ -12,6 +12,7 @@ export class Player {
   };
   theta: number = 0; // [0, 2 * Math.PI]
   velocity: number = 0;
+  image = new Image();
 
   constructor(initial_position: Position) {
     this.position = initial_position;
@@ -49,6 +50,10 @@ export class Player {
     }
   }
 
+  setImage(){
+    this.image.src = '/sprites/demon_roomba.png';
+  }
+
   draw(context: CanvasRenderingContext2D) {
     context.save();
     context.translate(this.position.x, this.position.y);
@@ -60,6 +65,8 @@ export class Player {
 
     context.fillStyle = 'red';
     context.fillRect(-10, -5, 20, 10);
+
+    // context.drawImage(this.image, this.position.x, this.position.y);
     
     
     context.restore();
