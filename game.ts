@@ -5,6 +5,12 @@ const canvas_height = body.clientHeight;
 const canvas_width = body.clientWidth;
 
 type DirectionKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+interface Wall {
+  x: number; 
+  y: number; 
+  height: number; 
+  width: number;
+}
 
 interface GameState {
   keys: {
@@ -17,6 +23,7 @@ interface GameState {
     x: number;
     y: number;
   };
+  walls: Wall[];
 }
 
 let state: GameState = {
@@ -27,7 +34,8 @@ let state: GameState = {
     battery: 100,
     x: Math.floor(canvas_width / 2),
     y: Math.floor(canvas_height / 2)
-  }
+  },
+  walls: []
 };
 
 // Initialize the canvas, make it retina-friendly by looking at device pixel ratio
@@ -78,6 +86,7 @@ function updateBattery() {
   if (current_time - state.clock > 1000) {
     state.clock = current_time;
     state.player.battery -= 1;
+    console.log(state.player.battery);
   }
 }
 
