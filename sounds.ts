@@ -1,9 +1,9 @@
 import { Howl } from 'howler';
 
-const normal_loop_url = require('./audio/Roomba Game Track Loop 1 .mp3');
-const startup_sound_url = require('./audio/Roomba Start-up sound.mp3');
-const shutdown_sound_url = require('./audio/Roomba Power down.mp3');
-const vacuum_on_sound_url = require('./audio/Vacuum Roomba Sound.mp3');
+const normal_loop_url = require('./audio/loops/normal.mp3');
+const undock_sound_url = require('./audio/sprites/undock.mp3');
+const dock_sound_url = require('./audio/sprites/dock.mp3');
+const vacuum_sound_url = require('./audio/sprites/vacuum.mp3');
 
 export class Sounds {
   is_muted: boolean = false;
@@ -12,16 +12,16 @@ export class Sounds {
     loop: true
   });
 
-  private startup_sound = new Howl({
-    src: [startup_sound_url]
+  private undock_sound = new Howl({
+    src: [undock_sound_url]
   });
 
-  private shutdown_sound = new Howl({
-    src: [shutdown_sound_url]
+  private dock_sound = new Howl({
+    src: [dock_sound_url]
   });
 
   private vacuum_ramps = new Howl({
-    src: [vacuum_on_sound_url],
+    src: [vacuum_sound_url],
     volume: 0.25,
     sprite: {
       ramp_on: [0, 1000],
@@ -30,7 +30,7 @@ export class Sounds {
   });
 
   private vacuum = new Howl({
-    src: [vacuum_on_sound_url],
+    src: [vacuum_sound_url],
     loop: true,
     volume: 0.25,
     sprite: {
@@ -49,27 +49,25 @@ export class Sounds {
   }
 
   undock() {
-    this.startup_sound.play();
-    this.startup_sound.once('end', () => {
-      this.vacuum_ramps.play('ramp_on');
-      this.startup_sound.off('end');
-    });
+    this.undock_sound.play();
+    const undock_sound_length = this.undock_sound.duration() * 1000 - 500;
+    setTimeout(() => {
+      this.vacuum_ramps.play('ramp_on')
+    }, undock_sound_length);
 
-    this.vacuum_ramps.once('end', () => {
+    setTimeout(() => {
       this.vacuum.play('vacuum');
-      this.vacuum_ramps.off('end');
-    });
+    }, undock_sound_length + 1000);
   }
 
   dock() {
-    this.vacuum.once('end', () => {
-      this.vacuum_ramps.play('ramp_off');
-      this.vacuum_ramps.once('end', () => {
-        this.shutdown_sound.play();
-        this.vacuum_ramps.off('end');
-      });
-      this.vacuum.off('end');
-    });
+    this.vacuum.stop();
+    this.vacuum_ramps.play('ramp_off');
+    const ramp_off_duration = 1000;
+    
+    setTimeout(() => {
+      this.dock_sound.play();
+    }, ramp_off_duration);
   }
 
   private queue() {

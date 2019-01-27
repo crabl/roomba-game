@@ -21,7 +21,8 @@ const canvas_width = 1024;
 
 const DIRT_REQUIRED = 100;
 const sounds = new Sounds();
-sounds.play();
+window['sounds'] = sounds;
+// sounds.play();
 
 interface GameState {
   status: GameStatus;
