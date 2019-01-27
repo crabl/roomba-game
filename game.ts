@@ -228,25 +228,27 @@ function drawHud() {
   context.restore();
 }
 
-(function draw() {
-  context.clearRect(0, 0 , canvas_width, canvas_height);
-
-  const current_status = state.status;
-  const next_status = getGameStatus();
-
+function drawFloor() {
+  context.save();
   const floor_pattern = context.createPattern(floor, 'repeat')
   context.rect(25, 25, canvas_width - 50, canvas_height - 50);
   context.fillStyle = floor_pattern;
   context.fill();
+  context.restore();
+}
 
+(function draw() {
+  context.clearRect(0, 0 , canvas_width, canvas_height);
+  const current_status = state.status;
+  const next_status = getGameStatus();
 
+  drawFloor();
   drawDecor();
   drawObstacles();
   state.player.draw(context);
+  drawHud();
   updatePlayer();
   detectCollisions();
-
-  drawHud();
 
   if (current_status !== next_status) {
     transition(current_status, next_status);
@@ -259,7 +261,7 @@ function drawHud() {
     context.fillStyle = '#000';
     context.fillText("You win! :D", 10, 50);
     return;
-  } else if (state.status == GameStatus.Lost){
+  } else if (state.status == GameStatus.Lost) {
     context.rect(0, 0, canvas_width, canvas_height);
     context.fillStyle = '#0008';
     context.fill();
