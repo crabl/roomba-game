@@ -14,10 +14,10 @@ export class Dirt implements Obstacle {
   constructor(public position: Position, public value: number) {}
 }
 
-// export class Doorway implements Obstacle {
-//   obstacle_type = ObstacleType.Doorway;
-//   constructor(public position: Position, public dimensions: Dimensions, public destination: string) {}
-// }
+export class Doorway implements Obstacle {
+  obstacle_type = ObstacleType.Doorway;
+  constructor(public position: Position, public dimensions: Dimensions, public destination: string) {}
+}
 
 // export class Charger implements Obstacle {
 //   obstacle_type = ObstacleType.Charger;
