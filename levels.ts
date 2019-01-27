@@ -1,4 +1,4 @@
-import { Wall, Doorway, Dirt } from './obstacles';
+import { Wall, Doorway, Dirt, Raised } from './obstacles';
 import { createChargingStation } from './charging_station';
 import { Rug } from './decor';
 
@@ -18,7 +18,36 @@ export function makeDirt() {
 export const level_0 = [
   ...makeDirt(),
   new Doorway({ x: 33, y: 450 }, { height: 100, width: 10 }, 1),
-  new Wall({ x: 25, y: 50 }, { height: 400, width: 25 }),
+  new Raised({ x: 250, y: 150 }, { height: 200, width: 300 }), // Table
+  new Wall({ x: 260, y: 160 }, { height: 20, width: 20 }), // Table leg
+  new Wall({ x: 520, y: 160 }, { height: 20, width: 20 }), // Table leg
+  new Wall({ x: 520, y: 320 }, { height: 20, width: 20 }), // Table leg
+  new Wall({ x: 260, y: 320 }, { height: 20, width: 20 }), // Table leg
+  new Raised({ x: 300, y: 70 }, { height: 65, width: 60 }), // Chair top left
+  new Raised({ x: 300, y: 70 }, { height: 10, width: 59 }), // Chair Back
+  new Wall({ x: 305, y: 75 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 345, y: 75 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 345, y: 115 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 305, y: 115 }, { height: 10, width: 10 }), // Chair leg
+  new Raised({ x: 450, y: 70 }, { height: 65, width: 60 }), // Chair top right
+  new Raised({ x: 450, y: 70 }, { height: 10, width: 59 }), // Chair Back
+  new Wall({ x: 455, y: 75 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 495, y: 75 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 495, y: 115 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 455, y: 115 }, { height: 10, width: 10 }), // Chair leg
+  new Raised({ x: 450, y: 360 }, { height: 65, width: 60 }), // Chair bottom right
+  new Raised({ x: 450, y: 415 }, { height: 10, width: 59 }), // Chair Back
+  new Wall({ x: 455, y: 365 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 495, y: 365 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 495, y: 410 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 455, y: 410 }, { height: 10, width: 10 }), // Chair leg
+  new Raised({ x: 300, y: 360 }, { height: 65, width: 60 }), // Chair bottom left
+  new Raised({ x: 300, y: 415 }, { height: 10, width: 59 }), // Chair Back
+  new Wall({ x: 305, y: 365 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 345, y: 365 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 345, y: 410 }, { height: 10, width: 10 }), // Chair leg
+  new Wall({ x: 305, y: 410 }, { height: 10, width: 10 }), // Chair leg
+new Wall({ x: 25, y: 50 }, { height: 400, width: 25 }),
   new Wall({ x: 25, y: 550 }, { height: 180, width: 25 }),
   new Wall({ x: 25, y: 725 }, { height: 25, width: 950 }),
   new Wall({ x: 975, y: 50 }, { height: 700, width: 25 }),
