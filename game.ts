@@ -22,6 +22,7 @@ interface GameState {
   };
   clock: any;
   player: Player;
+  dirt_count: number;
   current_level: number;
   levels: Obstacle[][];
   decor: Decor[][];
@@ -35,6 +36,7 @@ let state: GameState = {
     x: Math.floor(canvas_width / 2),
     y: Math.floor(canvas_height / 2)
   }),
+  dirt_count: 0,
   current_level: 0,
   levels: [
     level_0,
@@ -148,6 +150,8 @@ function detectCollisions() {
         // remove the dirt
         state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
+        state.dirt_count++;
+        console.log(state.dirt_count);
       } else if(o instanceof Doorway) {
         state.current_level = o.to_level;
       } else if (o instanceof ChargingStation) {
@@ -213,6 +217,12 @@ function drawDecor() {
       context.closePath();
     }
   });
+}
+
+function drawHud(){
+  context.beginPath();
+  
+  context.closePath();
 }
 
 (function draw() {
