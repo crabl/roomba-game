@@ -45,7 +45,7 @@ let state: GameState = {
     x: 99.28982763768035, //Math.floor(canvas_width / 2)
     y: 323.4658175130637 //Math.floor(canvas_height / 2)
   }),
-  current_level: 1,
+  current_level: 0,
   levels: [
     level_0,
     level_1
