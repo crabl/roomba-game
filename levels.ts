@@ -17,10 +17,12 @@ export function makeDirt(){
 }
   
 export const level_1  = [
-    new Doorway({x: 70, y: 600}, {height: 100, width: 10}, "doorTo2"),
-    new ChargingStation({x: 170, y:550}, {height: 20, width: 10}),
-    new Wall({x: 50, y: 50}, {height: 550, width: 50}),
-    new Wall({ x: 50, y: 700 }, { height: 200, width: 50 }),
+    new Doorway({x: 33, y: 450}, {height: 100, width: 10}, "doorTo2"),
+    new ChargingStation({x: 100, y:550}, {height: 20, width: 10}),
+    new Wall({x: 25, y: 50}, {height: 400, width: 25 }),
+    new Wall({ x: 25, y: 550 }, { height: 180, width: 25 }),
+    new Wall({ x: 25, y: 725 }, { height: 25, width: 950 }),
+    new Wall({ x: 825, y: 50 }, { height: 700, width: 25 }),
     ...makeDirt()
 ];
 
@@ -28,7 +30,7 @@ export const level_1  = [
 export const level_2 = [
     new Doorway({x: 670, y: 600}, {height: 100, width: 10}, "doorTo1"),
     new ChargingStation({x: 170, y:550}, {height: 20, width: 10}),
-    new Wall({x: 650, y: 50}, {height: 550, width: 50}),
-    new Wall({ x: 650, y: 700 }, { height: 200, width: 50 }),
+    new Wall({x: 650, y: 50}, {height: 550, width: 25}),
+    new Wall({ x: 650, y: 700 }, { height: 200, width: 25 }),
     ...makeDirt()
 ]
