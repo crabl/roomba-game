@@ -20,7 +20,12 @@ export class Doorway implements Obstacle {
   constructor(public position: Position, public dimensions: Dimensions, public to_level: number) {}
 }
 
-export class Raised implements Obstacle {
-  obstacle_type = ObstacleType.Raised;
-  constructor(public position: Position, public dimensions: Dimensions){}
-}
+// export class Charger implements Obstacle {
+//   obstacle_type = ObstacleType.Charger;
+//   dimensions = {
+//     height: 10,
+//     width: 5
+//   };
+
+//   constructor(public position: Position) {}
+// }

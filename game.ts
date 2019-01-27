@@ -4,7 +4,7 @@ import {
   Decor
 } from './common';
 import { isCollidingWith } from './collision-detection';
-import { Wall, Dirt, Doorway, Raised } from './obstacles';
+import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
 import { level_0, level_1, level_0_decor, level_1_decor } from './levels';
@@ -19,7 +19,7 @@ const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = 768;
 const canvas_width = 1024;
 
-const DIRT_REQUIRED = 1000;
+const DIRT_REQUIRED = 100;
 const sounds = new Sounds();
 sounds.play();
 window['sounds'] = sounds;
@@ -214,9 +214,7 @@ function detectCollisions() {
         if (player.battery <= 100){
           player.is_docked = true;
         }
-      } else if (o instanceof Raised) {
-        return;
-      }else {
+      } else {
         player.velocity = -1; // bump the player back a bit
       }
     }
@@ -247,17 +245,6 @@ function drawObstacles() {
       context.closePath();
     }
   });
-}
-function drawRaisedObstacles() {
-  state.levels[state.current_level].forEach((o:Obstacle)=> {
-    if(o instanceof Raised){
-      context.beginPath();
-      context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
-      context.fillStyle = '#7335';
-      context.fill();
-      context.closePath();
-    }
-  })
 }
 
 function drawDecor() {
@@ -327,9 +314,7 @@ function drawLoseState(context) {
   drawDecor();
   drawObstacles();
   state.player.draw(context);
-  drawRaisedObstacles();
   drawHud();
-
   updatePlayer();
   detectCollisions();
 
