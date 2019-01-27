@@ -146,6 +146,8 @@ function updatePlayer() {
     y: Math.min(Math.max(0, state.player.position.y + vy), canvas_height)
   };
 
+  // console.log(state.player.position);
+
   const current_time: any = new Date();
   if (current_time - state.clock > 10) {
     state.clock = current_time;
@@ -172,6 +174,17 @@ function detectCollisions() {
         state.player.dirt_collected += o.value;
       } else if(o instanceof Doorway) {
         state.current_level = o.to_level;
+        switch (o.to_level) {
+          case 0:
+            state.player.position.x = 100;
+            state.player.position.y = 490;
+            break;
+          case 1:
+            state.player.position.x = 870;
+            state.player.position.y = 500;
+            break;
+        }
+        
       } else if (o instanceof ChargingStation) {
         if (player.battery <= 100){
           player.is_docked = true;
