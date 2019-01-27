@@ -7,8 +7,11 @@ import { isCollidingWith } from './collision-detection';
 import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
-import { level_0, level_1, level_1_decor, level_2_decor } from './levels';
+import { level_0, level_1, level_0_decor, level_1_decor } from './levels';
 import { Rug } from './decor';
+
+const floor = new Image();
+floor.src = require('./sprites/hardwood_sprite.png')
 
 const canvas = document.querySelector('canvas');
 const device_pixel_ratio = window.devicePixelRatio;
@@ -24,7 +27,6 @@ interface GameState {
   };
   clock: any;
   player: Player;
-  dirt_count: number;
   current_level: number;
   levels: Obstacle[][];
   decor: Decor[][];
@@ -38,21 +40,24 @@ let state: GameState = {
     x: Math.floor(canvas_width / 2),
     y: Math.floor(canvas_height / 2)
   }),
-  dirt_count: 0,
   current_level: 0,
   levels: [
     level_0,
     level_1
   ],
   decor: [
-    level_1_decor,
-    level_2_decor
+    level_0_decor,
+    level_1_decor
   ]
 };
 
 function getGameStatus(): GameStatus {
   if (state.player.is_docked) {
     return GameStatus.Charging;
+  }
+
+  if (state.player.dirt_collected >= DIRT_REQUIRED) {
+    return GameStatus.Won;
   }
 
   if (state.player.battery === 0) {
@@ -88,7 +93,10 @@ canvas.style.width = canvas_width + 'px'; // css, need the px
 canvas.style.height = canvas_height + 'px'; // css, need the px
 
 onkeydown = onkeyup = function (e: KeyboardEvent) {
-  e.preventDefault();
+  if (state.status !== GameStatus.Won && state.status !== GameStatus.Lost) {
+    e.preventDefault(); // release keyboard when win/lose condition triggered
+  }
+
   if (e.type === 'keydown') {
     state.keys[e.key] = true;
   } else {
@@ -162,8 +170,6 @@ function detectCollisions() {
         // remove the dirt
         state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
-        state.dirt_count++;
-        console.log(state.dirt_count);
       } else if(o instanceof Doorway) {
         state.current_level = o.to_level;
       } else if (o instanceof ChargingStation) {
@@ -179,25 +185,24 @@ function detectCollisions() {
 
 function drawObstacles() {
   state.levels[state.current_level].forEach((o: Obstacle) => {
-    if(o instanceof ChargingStation){
+    if (o instanceof ChargingStation){
       o.draw(context);
-    } else if(o instanceof Wall) {
+    } else if (o instanceof Wall) {
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
       context.fillStyle = '#333';
       context.fill();
       context.closePath();
-    }
-    else if(o instanceof Doorway){
+    } else if (o instanceof Doorway){
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
       context.fillStyle = '#555';
       context.fill();
       context.closePath();
-    }else if(o instanceof Dirt){
+    } else if (o instanceof Dirt){
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
-      context.fillStyle = '#300';
+      context.fillStyle = o.color;
       context.fill();
       context.closePath();
     }
@@ -207,7 +212,7 @@ function drawObstacles() {
 function drawDecor() {
   const decor = state.decor[state.current_level];
   decor.forEach((d: Decor) => {
-    if(d instanceof Rug){
+    if (d instanceof Rug) {
       context.beginPath();
       context.drawImage(d.image, d.position.x, d.position.y, d.dimensions.width, d.dimensions.height);
       context.closePath();
@@ -215,21 +220,33 @@ function drawDecor() {
   });
 }
 
-function drawHud(){
-  context.beginPath();
-  
-  context.closePath();
+function drawHud() {
+  context.save();
+  context.font = "30px Arial";
+  context.fillStyle = '#000';
+  context.fillText(`Score: ${state.player.dirt_collected}`, 800, 700);
+  context.restore();
+}
+
+function drawFloor() {
+  context.save();
+  const floor_pattern = context.createPattern(floor, 'repeat')
+  context.rect(25, 25, canvas_width - 50, canvas_height - 50);
+  context.fillStyle = floor_pattern;
+  context.fill();
+  context.restore();
 }
 
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
-
   const current_status = state.status;
   const next_status = getGameStatus();
 
+  drawFloor();
   drawDecor();
   drawObstacles();
   state.player.draw(context);
+  drawHud();
   updatePlayer();
   detectCollisions();
 
@@ -244,7 +261,7 @@ function drawHud(){
     context.fillStyle = '#000';
     context.fillText("You win! :D", 10, 50);
     return;
-  } else if (state.status == GameStatus.Lost){
+  } else if (state.status == GameStatus.Lost) {
     context.rect(0, 0, canvas_width, canvas_height);
     context.fillStyle = '#0008';
     context.fill();

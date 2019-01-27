@@ -11,6 +11,7 @@ export class Dirt implements Obstacle {
     height: 2,
     width: 2
   };
+  color: 'rgba(50,50,50,0.5)';
   constructor(public position: Position, public value: number) {}
 }
 
