@@ -6,10 +6,9 @@ import { isCollidingWith } from './collision-detection';
 import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
-import {level_1, level_2, makeDirt } from './levels';
+import { level_0, level_1 } from './levels';
 
 const canvas = document.querySelector('canvas');
-const body = document.querySelector('body');
 const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = 768;
 const canvas_width = 1024;
@@ -35,8 +34,8 @@ let state: GameState = {
   }),
   current_level: 0,
   levels: [
-    level_1,
-    level_2
+    level_0,
+    level_1
   ]
 };
 
@@ -133,6 +132,9 @@ function updatePlayer() {
 function detectCollisions() {
   const { player } = state;
   let obstacles = state.levels[state.current_level];
+
+  player.is_docked = false; // fixes issue where player undocks and does not collide
+
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
       if (o instanceof Dirt) {
@@ -140,21 +142,13 @@ function detectCollisions() {
         state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
       } else if(o instanceof Doorway) {
-        if(o.destination == "doorTo1"){
-          state.current_level = 0;
-          // player.position = {x: 50, y: 460};
-        }
-        else if(o.destination == "doorTo2"){
-          state.current_level = 1;
-          // player.position = {x: 800, y: 600};
-          }
+        state.current_level = o.to_level;
       } else if (o instanceof ChargingStation) {
         if (player.battery <= 100){
           player.is_docked = true;
         }
       } else {
         player.velocity = -1; // bump the player back a bit
-        player.is_docked= false;
       }
     }
   });
@@ -174,8 +168,7 @@ function updateBattery() {
 }
 
 function drawObstacles() {
-  const obstacles = state.levels[state.current_level];
-  obstacles.forEach((o: Obstacle) => {
+  state.levels[state.current_level].forEach((o: Obstacle) => {
     if(o instanceof ChargingStation){
       o.draw(context);
     } else if(o instanceof Wall) {
@@ -206,9 +199,10 @@ function drawObstacles() {
 
   drawObstacles();
   updatePlayer();
+   detectCollisions();
   state.player.draw(context);
   updateBattery(); // eventually going to go in detectCollisions
-  detectCollisions();
+ 
 
   const current_status = state.status;
   const next_status = getGameStatus();
