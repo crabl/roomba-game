@@ -1,6 +1,6 @@
 import { Howl } from 'howler';
 
-const normal_loop_url = require('./audio/loops/normal.mp3');
+const normal_loop_url = require('./audio/loops/normal-loop.mp3');
 const critical_loop_url = require('./audio/loops/battery-critical.mp3');
 const undock_sound_url = require('./audio/sprites/undock.mp3');
 const dock_sound_url = require('./audio/sprites/dock.mp3');
