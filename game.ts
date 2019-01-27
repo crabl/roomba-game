@@ -7,7 +7,7 @@ import { isCollidingWith } from './collision-detection';
 import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
-import { level_0, level_1, level_1_decor, level_2_decor } from './levels';
+import { level_0, level_1, level_0_decor, level_1_decor } from './levels';
 import { Rug } from './decor';
 
 const floor = new Image();
@@ -46,8 +46,8 @@ let state: GameState = {
     level_1
   ],
   decor: [
-    level_1_decor,
-    level_2_decor
+    level_0_decor,
+    level_1_decor
   ]
 };
 
