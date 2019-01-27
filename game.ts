@@ -3,16 +3,16 @@ import {
   GameStatus
 } from './common';
 import { isCollidingWith, adjustPlayer } from './collision-detection';
-import { Wall, Dirt } from './obstacles';
+import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
+import {level_1, level_2, makeDirt } from './levels';
 
 const canvas = document.querySelector('canvas');
 const body = document.querySelector('body');
 const device_pixel_ratio = window.devicePixelRatio;
-const canvas_height = body.clientHeight;
-const canvas_width = body.clientWidth;
-const NumDirt = 1000;
+const canvas_height = 768;
+const canvas_width = 1024;
 
 interface GameState {
   status: GameStatus;
@@ -21,7 +21,8 @@ interface GameState {
   };
   clock: any;
   player: Player;
-  obstacles: Obstacle[]
+  current_level: number;
+  levels: Obstacle[][]
 }
 
 let state: GameState = {
@@ -32,25 +33,12 @@ let state: GameState = {
     x: Math.floor(canvas_width / 2),
     y: Math.floor(canvas_height / 2)
   }),
-  obstacles: [
-    new Dirt({ x: 300, y: 200 }, 1),
-    new Wall({ x: 400, y: 400 }, { height: 200, width: 200 }),
-    new Wall({ x: 700, y: 200 }, { height: 100, width: 100 }),
-    new ChargingStation({ x: 700, y: 600 }, { width: 10, height: 20 })
-
+  current_level: 0,
+  levels: [
+    level_1,
+    level_2
   ]
 };
-
-function generateDirt() {
-  const randomX: number = Math.random() * canvas_width;
-  const randomY: number = Math.random() * canvas_height;
-  state.obstacles.push(new Dirt({ x: randomX, y: randomY }, 1));
-}
-
-var i: number;
-for (i = 0; i < NumDirt; i++){
-  generateDirt();
-}
 
 function getGameStatus(): GameStatus {
   if (state.player.is_docked) {
@@ -143,21 +131,30 @@ function updatePlayer() {
 
 
 function detectCollisions() {
-  const { player, obstacles } = state;
-  player.is_docked = false;
-
+  const { player } = state;
+  let obstacles = state.levels[state.current_level];
   obstacles.forEach((o: Obstacle) => {
     if (isCollidingWith(player, o)) {
       if (o instanceof Dirt) {
         // remove the dirt
-        state.obstacles = obstacles.filter(x => o !== x);
+        state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
-      } else {
-        adjustPlayer(player, o)
-      }
-
-      if (o instanceof ChargingStation) {
-        player.is_docked = player.battery <= 100;
+      } else if(o instanceof Doorway) {
+        if(o.destination == "doorTo1"){
+          state.current_level = 0;
+          // player.position = {x: 50, y: 460};
+        }
+        else if(o.destination == "doorTo2"){
+          state.current_level = 1;
+          // player.position = {x: 800, y: 600};
+          }
+      } else if (o instanceof ChargingStation) {
+        if(player.battery <= 100){
+          player.is_docked = true;
+        }
+      }else{
+        adjustPlayer(player, o);
+        player.is_docked= false;
       }
     }
   });
@@ -177,14 +174,29 @@ function updateBattery() {
 }
 
 function drawObstacles() {
-  state.obstacles.forEach((o: Obstacle) => {
+  const obstacles = state.levels[state.current_level];
+  obstacles.forEach((o: Obstacle) => {
     if(o instanceof ChargingStation){
       o.draw(context);
-    } else {
+    } else if(o instanceof Wall) {
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
       context.fillStyle = '#333';
       context.fill();
+      context.closePath();
+    }
+    else if(o instanceof Doorway){
+      context.beginPath();
+      context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
+      context.fillStyle = '#555';
+      context.fill();
+      context.closePath();
+    }else if(o instanceof Dirt){
+      context.beginPath();
+      context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
+      context.fillStyle = '#300';
+      context.fill();
+      context.closePath();
     }
   });
 }
@@ -207,9 +219,6 @@ function drawObstacles() {
   }
 
   requestAnimationFrame(draw);
-
-  console.log(state.player.is_docked);
-
 })();
 
 
