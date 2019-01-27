@@ -235,9 +235,13 @@ function drawDecor() {
 
 function drawHud() {
   context.save();
-  context.font = "30px Arial";
+  const text = state.player.dirt_collected + ' points';
+  context.font = "30px Lobster";
+  context.strokeStyle = "#fff";
+  context.lineWidth = 3;
+  context.strokeText(text, 100, 700);
   context.fillStyle = '#000';
-  context.fillText(`Score: ${state.player.dirt_collected}`, 800, 700);
+  context.fillText(text, 100, 700);
   context.restore();
 }
 
@@ -248,6 +252,32 @@ function drawFloor() {
   context.fillStyle = floor_pattern;
   context.fill();
   context.restore();
+}
+
+function drawWinState(context) {
+  const text = 'You win!';
+  context.rect(0, 0, canvas_width, canvas_height);
+  context.fillStyle = '#0008';
+  context.fill();
+  context.font = "80px Lobster";
+  context.strokeStyle = '#000';
+  context.lineWidth = 6;
+  context.strokeText(text, 400, 400);
+  context.fillStyle = "#fff";
+  context.fillText(text, 400, 400);
+}
+
+function drawLoseState(context) {
+  const text = 'You lose!';
+  context.rect(0, 0, canvas_width, canvas_height);
+  context.fillStyle = '#0008';
+  context.fill();
+  context.font = "80px Lobster";
+  context.strokeStyle = '#000';
+  context.lineWidth = 6;
+  context.strokeText(text, 400, 400);
+  context.fillStyle = "#fff";
+  context.fillText(text, 400, 400);
 }
 
 (function draw() {
@@ -267,20 +297,10 @@ function drawFloor() {
     transition(current_status, next_status);
     state.status = next_status;
   } else if (state.status == GameStatus.Won) {
-    context.rect(0, 0, canvas_width, canvas_height);
-    context.fillStyle = '#ddd8';
-    context.fill();
-    context.font = "30px Arial";
-    context.fillStyle = '#000';
-    context.fillText("You win! :D", 10, 50);
+    drawWinState(context);
     return;
   } else if (state.status == GameStatus.Lost) {
-    context.rect(0, 0, canvas_width, canvas_height);
-    context.fillStyle = '#0008';
-    context.fill();
-    context.font = "30px Arial";
-    context.fillStyle = '#000';
-    context.fillText("You lose! :(", 10, 50);
+    drawLoseState(context);
     return;
   }
 
