@@ -49,6 +49,7 @@ export function isCollidingWith(player: Player, obstacle: Obstacle): boolean {
     return false;
 }
 
+// not used anymore
 export function adjustPlayer(player: Player, obstacle: Obstacle){
      var deltaX = player.position.x - Math.max(obstacle.position.x, 
         Math.min(player.position.x, obstacle.position.x + obstacle.dimensions.width));

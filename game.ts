@@ -2,7 +2,7 @@ import {
   Obstacle, 
   GameStatus
 } from './common';
-import { isCollidingWith, adjustPlayer } from './collision-detection';
+import { isCollidingWith } from './collision-detection';
 import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
@@ -149,11 +149,11 @@ function detectCollisions() {
           // player.position = {x: 800, y: 600};
           }
       } else if (o instanceof ChargingStation) {
-        if(player.battery <= 100){
+        if (player.battery <= 100){
           player.is_docked = true;
         }
-      }else{
-        adjustPlayer(player, o);
+      } else {
+        player.velocity = -1; // bump the player back a bit
         player.is_docked= false;
       }
     }
