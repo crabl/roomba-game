@@ -4,11 +4,11 @@ import { isContinueStatement, convertToObject } from "typescript";
 import { ChargingStation } from "./charging_station";
 import { Rug } from "./decor";
 
-const NumDirt = 1000;
+const NUM_DIRT = 500;
 
 export function makeDirt(){
   let dirt = [];
-  for (let i = 0; i < NumDirt; i++){
+  for (let i = 0; i < NUM_DIRT; i++){
     const randomX: number = 50 + (Math.random() * (1024 - 100));
     const randomY: number = 50 + (Math.random() * (768 - 100));
     dirt.push(new Dirt({x: randomX, y: randomY}, 1));

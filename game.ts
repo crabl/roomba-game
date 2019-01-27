@@ -10,6 +10,9 @@ import { ChargingStation } from './charging_station';
 import { level_0, level_1, level_1_decor, level_2_decor } from './levels';
 import { Rug } from './decor';
 
+const floor = new Image();
+floor.src = require('./sprites/hardwood_sprite.png')
+
 const canvas = document.querySelector('canvas');
 const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = 768;
@@ -24,7 +27,6 @@ interface GameState {
   };
   clock: any;
   player: Player;
-  dirt_count: number;
   current_level: number;
   levels: Obstacle[][];
   decor: Decor[][];
@@ -38,7 +40,6 @@ let state: GameState = {
     x: Math.floor(canvas_width / 2),
     y: Math.floor(canvas_height / 2)
   }),
-  dirt_count: 0,
   current_level: 0,
   levels: [
     level_0,
@@ -53,6 +54,10 @@ let state: GameState = {
 function getGameStatus(): GameStatus {
   if (state.player.is_docked) {
     return GameStatus.Charging;
+  }
+
+  if (state.player.dirt_collected >= DIRT_REQUIRED) {
+    return GameStatus.Won;
   }
 
   if (state.player.battery === 0) {
@@ -165,8 +170,6 @@ function detectCollisions() {
         // remove the dirt
         state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
-        state.dirt_count++;
-        console.log(state.dirt_count);
       } else if(o instanceof Doorway) {
         state.current_level = o.to_level;
       } else if (o instanceof ChargingStation) {
@@ -182,25 +185,24 @@ function detectCollisions() {
 
 function drawObstacles() {
   state.levels[state.current_level].forEach((o: Obstacle) => {
-    if(o instanceof ChargingStation){
+    if (o instanceof ChargingStation){
       o.draw(context);
-    } else if(o instanceof Wall) {
+    } else if (o instanceof Wall) {
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
       context.fillStyle = '#333';
       context.fill();
       context.closePath();
-    }
-    else if(o instanceof Doorway){
+    } else if (o instanceof Doorway){
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
       context.fillStyle = '#555';
       context.fill();
       context.closePath();
-    }else if(o instanceof Dirt){
+    } else if (o instanceof Dirt){
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
-      context.fillStyle = '#300';
+      context.fillStyle = o.color;
       context.fill();
       context.closePath();
     }
@@ -210,7 +212,7 @@ function drawObstacles() {
 function drawDecor() {
   const decor = state.decor[state.current_level];
   decor.forEach((d: Decor) => {
-    if(d instanceof Rug){
+    if (d instanceof Rug) {
       context.beginPath();
       context.drawImage(d.image, d.position.x, d.position.y, d.dimensions.width, d.dimensions.height);
       context.closePath();
@@ -218,10 +220,12 @@ function drawDecor() {
   });
 }
 
-function drawHud(){
-  context.beginPath();
-  
-  context.closePath();
+function drawHud() {
+  context.save();
+  context.font = "30px Arial";
+  context.fillStyle = '#000';
+  context.fillText(`Score: ${state.player.dirt_collected}`, 800, 700);
+  context.restore();
 }
 
 (function draw() {
@@ -230,11 +234,19 @@ function drawHud(){
   const current_status = state.status;
   const next_status = getGameStatus();
 
+  const floor_pattern = context.createPattern(floor, 'repeat')
+  context.rect(25, 25, canvas_width - 50, canvas_height - 50);
+  context.fillStyle = floor_pattern;
+  context.fill();
+
+
   drawDecor();
   drawObstacles();
   state.player.draw(context);
   updatePlayer();
   detectCollisions();
+
+  drawHud();
 
   if (current_status !== next_status) {
     transition(current_status, next_status);
