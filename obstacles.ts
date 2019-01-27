@@ -16,7 +16,7 @@ export class Dirt implements Obstacle {
 
 export class Doorway implements Obstacle {
   obstacle_type = ObstacleType.Doorway;
-  constructor(public position: Position, public dimensions: Dimensions, public destination: string) {}
+  constructor(public position: Position, public dimensions: Dimensions, public to_level: number) {}
 }
 
 // export class Charger implements Obstacle {
