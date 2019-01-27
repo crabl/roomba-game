@@ -2,7 +2,7 @@ import { Wall, Doorway, Dirt, Raised } from './obstacles';
 import { createChargingStation } from './charging_station';
 import { Rug } from './decor';
 
-const NUM_DIRT = 500;
+const NUM_DIRT = 750;
 
 const rug_image = require('./sprites/RugBAAA.png');
 const rug_big_image = require('./sprites/rug2.png');
