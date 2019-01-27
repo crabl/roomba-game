@@ -85,7 +85,17 @@ function getGameStatus(): GameStatus {
 function transition(current: GameStatus, next: GameStatus) {
   if (current === GameStatus.Normal && next === GameStatus.Low) {
     
-  } 
+  }
+
+  // Charging -> Not Charging = Undocked
+  if (current === GameStatus.Charging && next !== GameStatus.Charging) {
+    // sounds.undock();
+  }
+
+  // Not Charging -> Charging = Docked
+  if (current !== GameStatus.Charging && next === GameStatus.Charging) {
+    // sounds.dock();
+  }
   // perform state transitions
 }
 
