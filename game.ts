@@ -235,9 +235,13 @@ function drawDecor() {
 
 function drawHud() {
   context.save();
-  context.font = "30px Impact";
+  const text = state.player.dirt_collected + ' points';
+  context.font = "30px Lobster";
+  context.strokeStyle = "#fff";
+  context.lineWidth = 3;
+  context.strokeText(text, 100, 700);
   context.fillStyle = '#000';
-  context.fillText(`Score: ${state.player.dirt_collected}`, 800, 700);
+  context.fillText(text, 100, 700);
   context.restore();
 }
 
@@ -251,21 +255,29 @@ function drawFloor() {
 }
 
 function drawWinState(context) {
+  const text = 'You win!';
   context.rect(0, 0, canvas_width, canvas_height);
   context.fillStyle = '#0008';
   context.fill();
-  context.font = "80px Impact";
-  context.fillStyle = '#fff';
-  context.fillText("You win! :D", 400, 400);
+  context.font = "80px Lobster";
+  context.strokeStyle = '#000';
+  context.lineWidth = 6;
+  context.strokeText(text, 400, 400);
+  context.fillStyle = "#fff";
+  context.fillText(text, 400, 400);
 }
 
 function drawLoseState(context) {
+  const text = 'You lose!';
   context.rect(0, 0, canvas_width, canvas_height);
   context.fillStyle = '#0008';
   context.fill();
-  context.font = "80px Impact";
-  context.fillStyle = '#fff';
-  context.fillText("You lose! :(", 400, 400);
+  context.font = "80px Lobster";
+  context.strokeStyle = '#000';
+  context.lineWidth = 6;
+  context.strokeText(text, 400, 400);
+  context.fillStyle = "#fff";
+  context.fillText(text, 400, 400);
 }
 
 (function draw() {
