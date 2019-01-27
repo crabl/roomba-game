@@ -13,7 +13,7 @@ export class Player {
     x: 0,
     y: 0
   };
-  theta: number = 0; // [0, 2 * Math.PI]
+  theta: number = 3 / 2 * Math.PI; // [0, 2 * Math.PI] -> 3/2*pi === vertical
   velocity: number = 0;
   image = new Image();
 
