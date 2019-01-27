@@ -58,7 +58,7 @@ new Wall({ x: 25, y: 50 }, { height: 400, width: 25 }),
   ...createChargingStation({ x: 51, y: 300 })
 ];
 export const level_0_decor = [
-  new Rug({ x: 400, y: 400 }, { height: 150, width: 300 }, rug_image)
+  new Rug({ x: 250, y: 500 }, { height: 150, width: 300 }, rug_image)
 ]
 
 export const level_1 = [
@@ -73,5 +73,5 @@ export const level_1 = [
   ...createChargingStation({ x: 51, y: 600 })
 ]
 export const level_1_decor = [
-  new Rug({ x: 400, y: 150 }, { height: 500, width: 300 }, rug_big_image)
+  new Rug({ x: 300, y: 100 }, { height: 500, width: 300 }, rug_big_image)
 ]
