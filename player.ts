@@ -6,19 +6,15 @@ const PI = 3.14;
 
 export class Player {
   dirt_collected: number = 0;
-  is_docked: boolean = false;
+  is_docked: boolean = true;
   battery: number = 100;
   radius: number = 30;
-  position: Position = {
-    x: 0,
-    y: 0
-  };
-  theta: number = 3 / 2 * Math.PI; // [0, 2 * Math.PI] -> 3/2*pi === vertical
+
+  // theta: number = 3 / 2 * Math.PI; // [0, 2 * Math.PI] -> 3/2*pi === vertical
   velocity: number = 0;
   image = new Image();
 
-  constructor(initial_position: Position) {
-    this.position = initial_position;
+  constructor(public position: Position, public theta = Math.PI) {
     this.image.src = roombaImage;
   }
 
@@ -68,8 +64,8 @@ export class Player {
     // pulse indicator faster
     if (this.battery <= 25) {
       context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 10));
-    } else if (this.battery > 25 && this.battery <= 50) {
-      context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 5));
+    /*} else if (this.battery > 25 && this.battery <= 50) {
+      context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 5));*/
     } else {
       context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 2));
     }
@@ -83,8 +79,8 @@ export class Player {
     context.shadowBlur = context.lineWidth * 2;
     if (this.battery <= 25) {
       context.shadowColor = context.strokeStyle = 'rgba(255,124,124,0.5)';
-    } else if (this.battery > 25 && this.battery <= 50) {
-      context.shadowColor = context.strokeStyle = 'rgba(255,189,129,0.5)';	
+    /*} else if (this.battery > 25 && this.battery <= 50) {
+      context.shadowColor = context.strokeStyle = 'rgba(255,189,129,0.5)';*/
     } else {
       context.shadowColor = context.strokeStyle = 'rgba(186,255,192,0.5)';
     }
@@ -101,8 +97,8 @@ export class Player {
     context.beginPath();
     if (this.battery <= 25) {
       context.strokeStyle = 'rgba(250,0,0,0.75)';
-    } else if (this.battery > 25 && this.battery <= 50) {
-      context.strokeStyle = 'rgba(255,123,0,0.75)';
+    /*} else if (this.battery > 25 && this.battery <= 50) {
+      context.strokeStyle = 'rgba(255,123,0,0.75)';*/
     } else {
       context.strokeStyle = 'rgba(0,206,18,0.75)';
     }

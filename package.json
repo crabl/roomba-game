@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@types/node": "^10.12.18",
+    "howler": "^2.1.1",
     "moment": "^2.24.0"
   }
 }

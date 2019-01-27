@@ -12,6 +12,7 @@ import { Rug } from './decor';
 
 const floor = new Image();
 floor.src = require('./sprites/hardwood_sprite.png')
+import { Sounds } from './sounds';
 
 const canvas = document.querySelector('canvas');
 const device_pixel_ratio = window.devicePixelRatio;
@@ -19,6 +20,10 @@ const canvas_height = 768;
 const canvas_width = 1024;
 
 const DIRT_REQUIRED = 100;
+const sounds = new Sounds();
+sounds.play();
+window['sounds'] = sounds;
+// sounds.play();
 
 interface GameState {
   status: GameStatus;
@@ -33,12 +38,12 @@ interface GameState {
 }
 
 let state: GameState = {
-  status: GameStatus.Normal,
+  status: GameStatus.Charging,
   keys: {},
   clock: new Date(),
   player: new Player({
-    x: Math.floor(canvas_width / 2),
-    y: Math.floor(canvas_height / 2)
+    x: 99.28982763768035, //Math.floor(canvas_width / 2)
+    y: 323.4658175130637 //Math.floor(canvas_height / 2)
   }),
   current_level: 0,
   levels: [
@@ -68,9 +73,9 @@ function getGameStatus(): GameStatus {
     }
   }
 
-  if (state.player.battery > 25 && state.player.battery <= 50) {
-    return GameStatus.Low;
-  }
+  // if (state.player.battery > 25 && state.player.battery <= 50) {
+  //   return GameStatus.Low;
+  // }
 
   if (state.player.battery > 0 && state.player.battery <= 25) {
     return GameStatus.Critical;
@@ -80,9 +85,29 @@ function getGameStatus(): GameStatus {
 }
 
 function transition(current: GameStatus, next: GameStatus) {
-  if (current === GameStatus.Normal && next === GameStatus.Low) {
-    
-  } 
+  console.log(current + ' -> ' + next);
+  
+  if ((current === GameStatus.Charging || current === GameStatus.Normal) && next === GameStatus.Critical) {
+    sounds.normalToCritical();
+  }
+
+  if (current === GameStatus.Critical) {
+    sounds.criticalToNormal();
+  }
+
+  if (next === GameStatus.Lost || next === GameStatus.Won) {
+    sounds.stopAll();
+  }
+
+  // Charging -> Not Charging = Undocked
+  if (current === GameStatus.Charging && next !== GameStatus.Charging) {
+    sounds.undock();
+  }
+
+  // Not Charging -> Charging = Docked
+  if (current !== GameStatus.Charging && next === GameStatus.Charging) {
+    sounds.dock();
+  }
   // perform state transitions
 }
 
@@ -292,6 +317,8 @@ function drawLoseState(context) {
   drawHud();
   updatePlayer();
   detectCollisions();
+
+  // console.log(state.player.position.x, state.player.position.y)
 
   if (current_status !== next_status) {
     transition(current_status, next_status);
