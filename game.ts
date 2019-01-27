@@ -88,7 +88,10 @@ canvas.style.width = canvas_width + 'px'; // css, need the px
 canvas.style.height = canvas_height + 'px'; // css, need the px
 
 onkeydown = onkeyup = function (e: KeyboardEvent) {
-  e.preventDefault();
+  if (state.status !== GameStatus.Won && state.status !== GameStatus.Lost) {
+    e.preventDefault(); // release keyboard when win/lose condition triggered
+  }
+
   if (e.type === 'keydown') {
     state.keys[e.key] = true;
   } else {
