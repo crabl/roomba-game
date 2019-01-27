@@ -51,9 +51,9 @@ export function isCollidingWith(player: Player, obstacle: Obstacle): boolean {
 
 export function adjustPlayer(player: Player, obstacle: Obstacle){
      var deltaX = player.position.x - Math.max(obstacle.position.x, 
-        Math.min(player.position.x, obstacle.position.x +obstacle.dimensions.width));
+        Math.min(player.position.x, obstacle.position.x + obstacle.dimensions.width));
      var deltaY = player.position.y - Math.max(obstacle.position.y, 
-        Math.min(player.position.y, obstacle.position.y +obstacle.dimensions.width));
+        Math.min(player.position.y, obstacle.position.y + obstacle.dimensions.height));
 
     if (deltaY < 0){
         player.position.y = obstacle.position.y - player.radius;

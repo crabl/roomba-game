@@ -142,10 +142,12 @@ function detectCollisions() {
       } else if(o instanceof Doorway) {
         if(o.destination == "doorTo1"){
           state.current_level = 0;
+          // player.position = {x: 50, y: 460};
         }
         else if(o.destination == "doorTo2"){
           state.current_level = 1;
-        }
+          // player.position = {x: 800, y: 600};
+          }
       } else if (o instanceof ChargingStation) {
         if(player.battery <= 100){
           player.is_docked = true;
@@ -217,9 +219,6 @@ function drawObstacles() {
   }
 
   requestAnimationFrame(draw);
-
-  console.log(state.player.is_docked);
-
 })();
 
 
