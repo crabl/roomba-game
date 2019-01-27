@@ -1,5 +1,5 @@
-import { 
-  Obstacle, 
+import {
+  Obstacle,
   GameStatus,
   Decor
 } from './common';
@@ -86,7 +86,7 @@ function getGameStatus(): GameStatus {
 
 function transition(current: GameStatus, next: GameStatus) {
   console.log(current + ' -> ' + next);
-  
+
   if ((current === GameStatus.Charging || current === GameStatus.Normal) && next === GameStatus.Critical) {
     sounds.normalToCritical();
   }
@@ -176,7 +176,7 @@ function updatePlayer() {
   const current_time: any = new Date();
   if (current_time - state.clock > 10) {
     state.clock = current_time;
-  
+
     if (state.player.is_docked) {
       state.player.battery = Math.min(100, state.player.battery + .05);
     } else {
@@ -197,7 +197,7 @@ function detectCollisions() {
         // remove the dirt
         state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
-      } else if(o instanceof Doorway) {
+      } else if (o instanceof Doorway) {
         state.current_level = o.to_level;
         switch (o.to_level) {
           case 0:
@@ -209,14 +209,14 @@ function detectCollisions() {
             state.player.position.y = 500;
             break;
         }
-        
+
       } else if (o instanceof ChargingStation) {
-        if (player.battery <= 100){
+        if (player.battery <= 100) {
           player.is_docked = true;
         }
       } else if (o instanceof Raised) {
         return;
-      }else {
+      } else {
         player.velocity = -1; // bump the player back a bit
       }
     }
@@ -225,7 +225,7 @@ function detectCollisions() {
 
 function drawObstacles() {
   state.levels[state.current_level].forEach((o: Obstacle) => {
-    if (o instanceof ChargingStation){
+    if (o instanceof ChargingStation) {
       o.draw(context);
     } else if (o instanceof Wall) {
       context.beginPath();
@@ -233,29 +233,30 @@ function drawObstacles() {
       context.fillStyle = '#333';
       context.fill();
       context.closePath();
-    } else if (o instanceof Doorway){
+    } else if (o instanceof Doorway) {
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
       context.fillStyle = '#555';
       context.fill();
       context.closePath();
-    } else if (o instanceof Dirt){
+    } else if (o instanceof Dirt) {
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
-      context.fillStyle = o.color;
+      context.fillStyle = '#333';
       context.fill();
       context.closePath();
     }
   });
 }
+
 function drawRaisedObstacles() {
-  state.levels[state.current_level].forEach((o:Obstacle)=> {
-    if(o instanceof Raised){
+  state.levels[state.current_level].forEach((o: Obstacle) => {
+    if (o instanceof Raised) {
       context.beginPath();
       context.rect(o.position.x, o.position.y, o.dimensions.width, o.dimensions.height);
-      context.fillStyle = '#7335';
-      context.fill();
+      context.fillStyle = '#7339';
       context.closePath();
+      context.fill();
     }
   })
 }
@@ -319,7 +320,7 @@ function drawLoseState(context) {
 }
 
 (function draw() {
-  context.clearRect(0, 0 , canvas_width, canvas_height);
+  context.clearRect(0, 0, canvas_width, canvas_height);
   const current_status = state.status;
   const next_status = getGameStatus();
 
