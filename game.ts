@@ -15,6 +15,8 @@ const device_pixel_ratio = window.devicePixelRatio;
 const canvas_height = 768;
 const canvas_width = 1024;
 
+const DIRT_REQUIRED = 100;
+
 interface GameState {
   status: GameStatus;
   keys: {
@@ -22,6 +24,7 @@ interface GameState {
   };
   clock: any;
   player: Player;
+  dirt_count: number;
   current_level: number;
   levels: Obstacle[][];
   decor: Decor[][];
@@ -35,6 +38,7 @@ let state: GameState = {
     x: Math.floor(canvas_width / 2),
     y: Math.floor(canvas_height / 2)
   }),
+  dirt_count: 0,
   current_level: 0,
   levels: [
     level_0,
@@ -52,7 +56,7 @@ function getGameStatus(): GameStatus {
   }
 
   if (state.player.battery === 0) {
-    if (state.player.dirt_collected > 100) {
+    if (state.player.dirt_collected > DIRT_REQUIRED) {
       return GameStatus.Won;
     } else {
       return GameStatus.Lost;
@@ -133,8 +137,18 @@ function updatePlayer() {
     x: Math.min(Math.max(0, state.player.position.x + vx), canvas_width),
     y: Math.min(Math.max(0, state.player.position.y + vy), canvas_height)
   };
-}
 
+  const current_time: any = new Date();
+  if (current_time - state.clock > 10) {
+    state.clock = current_time;
+  
+    if (state.player.is_docked) {
+      state.player.battery = Math.min(100, state.player.battery + .03);
+    } else {
+      state.player.battery = Math.max(0, state.player.battery - .01)
+    }
+  }
+}
 
 function detectCollisions() {
   const { player } = state;
@@ -148,6 +162,8 @@ function detectCollisions() {
         // remove the dirt
         state.levels[state.current_level] = obstacles.filter(x => o !== x);
         state.player.dirt_collected += o.value;
+        state.dirt_count++;
+        console.log(state.dirt_count);
       } else if(o instanceof Doorway) {
         state.current_level = o.to_level;
       } else if (o instanceof ChargingStation) {
@@ -159,19 +175,6 @@ function detectCollisions() {
       }
     }
   });
-}
-
-function updateBattery() {
-  const current_time: any = new Date();
-  if (current_time - state.clock > 10) {
-    state.clock = current_time;
-  
-    if (state.player.is_docked) {
-      state.player.battery = Math.min(100, state.player.battery + .03);
-    } else {
-      state.player.battery = Math.max(0, state.player.battery - .01)
-    }
-  }
 }
 
 function drawObstacles() {
@@ -207,44 +210,49 @@ function drawDecor() {
     if(d instanceof Rug){
       context.beginPath();
       context.drawImage(d.image, d.position.x, d.position.y, d.dimensions.width, d.dimensions.height);
-      // context.rect(d.position.x, d.position.y, d.dimensions.width, d.dimensions.height);
-      // context.fillStyle = '#f35';
-      // context.fill();
       context.closePath();
     }
   });
 }
 
+function drawHud(){
+  context.beginPath();
+  
+  context.closePath();
+}
+
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
-
-  drawDecor();
-  drawObstacles();
-  updatePlayer();
-   detectCollisions();
-  state.player.draw(context);
-  updateBattery(); // eventually going to go in detectCollisions
- 
 
   const current_status = state.status;
   const next_status = getGameStatus();
 
+  drawDecor();
+  drawObstacles();
+  state.player.draw(context);
+  updatePlayer();
+  detectCollisions();
+
   if (current_status !== next_status) {
     transition(current_status, next_status);
     state.status = next_status;
-  }
-
-  if (state.status == GameStatus.Won){
+  } else if (state.status == GameStatus.Won) {
     context.rect(0, 0, canvas_width, canvas_height);
     context.fillStyle = '#ddd8';
     context.fill();
-  }
-  if (state.status == GameStatus.Lost){
+    context.font = "30px Arial";
+    context.fillStyle = '#000';
+    context.fillText("You win! :D", 10, 50);
+    return;
+  } else if (state.status == GameStatus.Lost){
     context.rect(0, 0, canvas_width, canvas_height);
     context.fillStyle = '#0008';
     context.fill();
+    context.font = "30px Arial";
+    context.fillStyle = '#000';
+    context.fillText("You lose! :(", 10, 50);
+    return;
   }
-
 
   requestAnimationFrame(draw);
 })();
