@@ -37,12 +37,12 @@ interface GameState {
 }
 
 let state: GameState = {
-  status: GameStatus.Normal,
+  status: GameStatus.Charging,
   keys: {},
   clock: new Date(),
   player: new Player({
-    x: Math.floor(canvas_width / 2),
-    y: Math.floor(canvas_height / 2)
+    x: 99.28982763768035, //Math.floor(canvas_width / 2)
+    y: 323.4658175130637 //Math.floor(canvas_height / 2)
   }),
   current_level: 0,
   levels: [
@@ -84,18 +84,19 @@ function getGameStatus(): GameStatus {
 }
 
 function transition(current: GameStatus, next: GameStatus) {
+  console.log(current + ' -> ' + next);
   if (current === GameStatus.Normal && next === GameStatus.Low) {
     
   }
 
   // Charging -> Not Charging = Undocked
   if (current === GameStatus.Charging && next !== GameStatus.Charging) {
-    // sounds.undock();
+    sounds.undock();
   }
 
   // Not Charging -> Charging = Docked
   if (current !== GameStatus.Charging && next === GameStatus.Charging) {
-    // sounds.dock();
+    sounds.dock();
   }
   // perform state transitions
 }
@@ -306,6 +307,8 @@ function drawLoseState(context) {
   drawHud();
   updatePlayer();
   detectCollisions();
+
+  // console.log(state.player.position.x, state.player.position.y)
 
   if (current_status !== next_status) {
     transition(current_status, next_status);

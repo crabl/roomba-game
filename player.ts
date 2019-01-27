@@ -6,19 +6,15 @@ const PI = 3.14;
 
 export class Player {
   dirt_collected: number = 0;
-  is_docked: boolean = false;
+  is_docked: boolean = true;
   battery: number = 100;
   radius: number = 30;
-  position: Position = {
-    x: 0,
-    y: 0
-  };
-  theta: number = 3 / 2 * Math.PI; // [0, 2 * Math.PI] -> 3/2*pi === vertical
+
+  // theta: number = 3 / 2 * Math.PI; // [0, 2 * Math.PI] -> 3/2*pi === vertical
   velocity: number = 0;
   image = new Image();
 
-  constructor(initial_position: Position) {
-    this.position = initial_position;
+  constructor(public position: Position, public theta = Math.PI) {
     this.image.src = roombaImage;
   }
 
