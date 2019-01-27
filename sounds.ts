@@ -45,7 +45,7 @@ export class Sounds {
   }
 
   play() {
-    // this.normal_loop.play();
+    this.normal_loop.play();
   }
 
   undock() {
