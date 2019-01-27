@@ -2,6 +2,7 @@ import { Wall, Doorway, Dirt } from "./obstacles";
 import { Obstacle } from "./common";
 import { isContinueStatement, convertToObject } from "typescript";
 import { ChargingStation } from "./charging_station";
+import { Rug } from "./decor";
 
 const NumDirt = 1000;
 
@@ -26,7 +27,9 @@ export const level_0  = [
     new Wall({ x: 25, y: 25 }, { height: 25, width: 975 }),
     ...makeDirt()
 ];
-
+export const level_1_decor = [
+    new Rug({x: 400, y: 400}, {height: 150, width: 300})
+]
 
 export const level_1 = [
     new Doorway({x: 983, y: 450}, {height: 100, width: 10}, 0),
@@ -37,4 +40,7 @@ export const level_1 = [
     new Wall({ x: 25, y: 50 }, { height: 700, width: 25 }),
     new Wall({ x: 25, y: 25 }, { height: 25, width: 975 }),
     ...makeDirt()
+]
+export const level_2_decor = [
+    new Rug({x: 300, y: 200}, {height: 500, width: 200})
 ]

@@ -1,12 +1,14 @@
 import { 
   Obstacle, 
-  GameStatus
+  GameStatus,
+  Decor
 } from './common';
 import { isCollidingWith } from './collision-detection';
 import { Wall, Dirt, Doorway } from './obstacles';
 import { Player } from './player';
 import { ChargingStation } from './charging_station';
-import { level_0, level_1 } from './levels';
+import { level_0, level_1, level_1_decor, level_2_decor } from './levels';
+import { Rug } from './decor';
 
 const canvas = document.querySelector('canvas');
 const device_pixel_ratio = window.devicePixelRatio;
@@ -21,7 +23,8 @@ interface GameState {
   clock: any;
   player: Player;
   current_level: number;
-  levels: Obstacle[][]
+  levels: Obstacle[][];
+  decor: Decor[][];
 }
 
 let state: GameState = {
@@ -36,6 +39,10 @@ let state: GameState = {
   levels: [
     level_0,
     level_1
+  ],
+  decor: [
+    level_1_decor,
+    level_2_decor
   ]
 };
 
@@ -45,7 +52,7 @@ function getGameStatus(): GameStatus {
   }
 
   if (state.player.battery === 0) {
-    if (state.player.dirt_collected > 1000) {
+    if (state.player.dirt_collected > 100) {
       return GameStatus.Won;
     } else {
       return GameStatus.Lost;
@@ -194,9 +201,24 @@ function drawObstacles() {
   });
 }
 
+function drawDecor() {
+  const decor = state.decor[state.current_level];
+  decor.forEach((d: Decor) => {
+    if(d instanceof Rug){
+      context.beginPath();
+      context.drawImage(d.image, d.position.x, d.position.y, d.dimensions.width, d.dimensions.height);
+      // context.rect(d.position.x, d.position.y, d.dimensions.width, d.dimensions.height);
+      // context.fillStyle = '#f35';
+      // context.fill();
+      context.closePath();
+    }
+  });
+}
+
 (function draw() {
   context.clearRect(0, 0 , canvas_width, canvas_height);
 
+  drawDecor();
   drawObstacles();
   updatePlayer();
    detectCollisions();
@@ -211,6 +233,18 @@ function drawObstacles() {
     transition(current_status, next_status);
     state.status = next_status;
   }
+
+  if (state.status == GameStatus.Won){
+    context.rect(0, 0, canvas_width, canvas_height);
+    context.fillStyle = '#ddd8';
+    context.fill();
+  }
+  if (state.status == GameStatus.Lost){
+    context.rect(0, 0, canvas_width, canvas_height);
+    context.fillStyle = '#0008';
+    context.fill();
+  }
+
 
   requestAnimationFrame(draw);
 })();
