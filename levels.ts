@@ -4,6 +4,9 @@ import { Rug } from './decor';
 
 const NUM_DIRT = 500;
 
+const rug_image = require('./sprites/RugBAAA.png');
+const rug_big_image = require('./sprites/rug2.png');
+
 export function makeDirt() {
   let dirt = [];
   for (let i = 0; i < NUM_DIRT; i++) {
@@ -55,11 +58,12 @@ new Wall({ x: 25, y: 50 }, { height: 400, width: 25 }),
   ...createChargingStation({ x: 51, y: 300 })
 ];
 export const level_0_decor = [
-  new Rug({ x: 400, y: 400 }, { height: 150, width: 300 })
+  new Rug({ x: 400, y: 400 }, { height: 150, width: 300 }, rug_image)
 ]
 
 export const level_1 = [
   ...makeDirt(),
+  new Wall({ x: 70, y: 100 }, { height: 400, width: 200 }), // Couch
   new Doorway({ x: 983, y: 450 }, { height: 100, width: 10 }, 0),
   new Wall({ x: 975, y: 50 }, { height: 400, width: 25 }),
   new Wall({ x: 975, y: 550 }, { height: 180, width: 25 }),
@@ -69,5 +73,5 @@ export const level_1 = [
   ...createChargingStation({ x: 51, y: 600 })
 ]
 export const level_1_decor = [
-  new Rug({ x: 300, y: 200 }, { height: 500, width: 200 })
+  new Rug({ x: 400, y: 150 }, { height: 500, width: 300 }, rug_big_image)
 ]
