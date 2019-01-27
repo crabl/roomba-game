@@ -21,6 +21,7 @@ const canvas_width = 1024;
 
 const DIRT_REQUIRED = 100;
 const sounds = new Sounds();
+sounds.play();
 window['sounds'] = sounds;
 // sounds.play();
 
@@ -72,9 +73,9 @@ function getGameStatus(): GameStatus {
     }
   }
 
-  if (state.player.battery > 25 && state.player.battery <= 50) {
-    return GameStatus.Low;
-  }
+  // if (state.player.battery > 25 && state.player.battery <= 50) {
+  //   return GameStatus.Low;
+  // }
 
   if (state.player.battery > 0 && state.player.battery <= 25) {
     return GameStatus.Critical;
@@ -85,8 +86,17 @@ function getGameStatus(): GameStatus {
 
 function transition(current: GameStatus, next: GameStatus) {
   console.log(current + ' -> ' + next);
-  if (current === GameStatus.Normal && next === GameStatus.Low) {
-    
+  
+  if ((current === GameStatus.Charging || current === GameStatus.Normal) && next === GameStatus.Critical) {
+    sounds.normalToCritical();
+  }
+
+  if (current === GameStatus.Critical) {
+    sounds.criticalToNormal();
+  }
+
+  if (next === GameStatus.Lost || next === GameStatus.Won) {
+    sounds.stopAll();
   }
 
   // Charging -> Not Charging = Undocked
@@ -170,7 +180,7 @@ function updatePlayer() {
     if (state.player.is_docked) {
       state.player.battery = Math.min(100, state.player.battery + .05);
     } else {
-      state.player.battery = Math.max(0, state.player.battery - .01)
+      state.player.battery = Math.max(0, state.player.battery - .03)
     }
   }
 }

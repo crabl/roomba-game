@@ -1,6 +1,7 @@
 import { Howl } from 'howler';
 
 const normal_loop_url = require('./audio/loops/normal.mp3');
+const critical_loop_url = require('./audio/loops/battery-critical.mp3');
 const undock_sound_url = require('./audio/sprites/undock.mp3');
 const dock_sound_url = require('./audio/sprites/dock.mp3');
 const vacuum_sound_url = require('./audio/sprites/vacuum.mp3');
@@ -9,6 +10,11 @@ export class Sounds {
   is_muted: boolean = false;
   private normal_loop = new Howl({
     src: [normal_loop_url],
+    loop: true
+  });
+
+  private critical_loop = new Howl({
+    src: [critical_loop_url],
     loop: true
   });
 
@@ -39,13 +45,27 @@ export class Sounds {
   });
 
   constructor() {
-    this.normal_loop.on('end', () => {
-      console.log('yo')
-    })
+    
   }
 
   play() {
     this.normal_loop.play();
+  }
+
+  normalToCritical() {
+    this.critical_loop.off('end');
+    this.normal_loop.once('end', () => {
+      this.normal_loop.stop();
+      this.critical_loop.play();
+    });
+  }
+
+  criticalToNormal() {
+    this.normal_loop.off('end');
+    this.critical_loop.once('end', () => {
+      this.critical_loop.stop();
+      this.normal_loop.play();
+    });
   }
 
   undock() {
@@ -70,10 +90,6 @@ export class Sounds {
     }, ramp_off_duration);
   }
 
-  private queue() {
-
-  }
-
   mute() {
     this.is_muted = true;
   }
@@ -81,5 +97,11 @@ export class Sounds {
   unmute() {
     this.is_muted = false;
     this.play();
+  }
+
+  stopAll() {
+    this.vacuum.stop();
+    this.normal_loop.stop();
+    this.critical_loop.stop();
   }
 }

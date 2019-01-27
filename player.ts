@@ -64,8 +64,8 @@ export class Player {
     // pulse indicator faster
     if (this.battery <= 25) {
       context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 10));
-    } else if (this.battery > 25 && this.battery <= 50) {
-      context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 5));
+    /*} else if (this.battery > 25 && this.battery <= 50) {
+      context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 5));*/
     } else {
       context.lineWidth = base_line_width + 4 * Math.abs(Math.sin(this.battery * 2));
     }
@@ -79,8 +79,8 @@ export class Player {
     context.shadowBlur = context.lineWidth * 2;
     if (this.battery <= 25) {
       context.shadowColor = context.strokeStyle = 'rgba(255,124,124,0.5)';
-    } else if (this.battery > 25 && this.battery <= 50) {
-      context.shadowColor = context.strokeStyle = 'rgba(255,189,129,0.5)';	
+    /*} else if (this.battery > 25 && this.battery <= 50) {
+      context.shadowColor = context.strokeStyle = 'rgba(255,189,129,0.5)';*/
     } else {
       context.shadowColor = context.strokeStyle = 'rgba(186,255,192,0.5)';
     }
@@ -97,8 +97,8 @@ export class Player {
     context.beginPath();
     if (this.battery <= 25) {
       context.strokeStyle = 'rgba(250,0,0,0.75)';
-    } else if (this.battery > 25 && this.battery <= 50) {
-      context.strokeStyle = 'rgba(255,123,0,0.75)';
+    /*} else if (this.battery > 25 && this.battery <= 50) {
+      context.strokeStyle = 'rgba(255,123,0,0.75)';*/
     } else {
       context.strokeStyle = 'rgba(0,206,18,0.75)';
     }
