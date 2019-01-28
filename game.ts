@@ -217,7 +217,7 @@ function detectCollisions() {
       } else if (o instanceof Raised) {
         return;
       } else {
-        player.velocity = -1; // bump the player back a bit
+        player.velocity = -1 * Math.sign(player.velocity); // bump the player back a bit (opposite direction they are heading)
       }
     }
   });
