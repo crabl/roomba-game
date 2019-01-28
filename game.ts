@@ -180,7 +180,7 @@ function updatePlayer() {
     if (state.player.is_docked) {
       state.player.battery = Math.min(100, state.player.battery + .05);
     } else {
-      state.player.battery = Math.max(0, state.player.battery - .01)
+      state.player.battery = Math.max(0, state.player.battery - .03)
     }
   }
 }

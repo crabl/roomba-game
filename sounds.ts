@@ -28,7 +28,7 @@ export class Sounds {
 
   private vacuum_ramps = new Howl({
     src: [vacuum_sound_url],
-    volume: 0.25,
+    volume: 0.1,
     sprite: {
       ramp_on: [0, 1000],
       ramp_off: [7000, 8000]
@@ -38,7 +38,7 @@ export class Sounds {
   private vacuum = new Howl({
     src: [vacuum_sound_url],
     loop: true,
-    volume: 0.25,
+    volume: 0.1,
     sprite: {
       vacuum: [1000, 1600]
     }
